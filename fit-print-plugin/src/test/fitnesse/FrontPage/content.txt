@@ -1,0 +1,7 @@
+!1 !c Welcome to [[!-FitPrint-!][.FitPrint]]!
+!3 !c ''!-FitNesse-! plugin to print, export wiki pages to PDF or Word.''
+
+!4 Table of content
+ * [[!-FitPrint-!][.FitPrint]] - ''Documentation and Tests''
+
+!note Release ${FITNESSE_VERSION}

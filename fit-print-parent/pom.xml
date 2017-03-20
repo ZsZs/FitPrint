@@ -1,0 +1,302 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.processpuzzle.fitnesse</groupId>
+  <artifactId>fit-print-parent</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>FitPrint - Parent</name>
+  <description>Maven parent pom of FitPrint FitNesse plugin.</description>
+  <packaging>pom</packaging>
+  
+  <properties>
+    <commons.lang3.version>3.5</commons.lang3.version>
+
+    <fitnesse.host>9123</fitnesse.host>
+    <fitnesse.maven.plugin.version>1.6.4-RELEASE</fitnesse.maven.plugin.version>
+    <fitnesse.version>20151230</fitnesse.version>
+    <guava.version>21.0</guava.version>
+    <java.version>1.8</java.version>
+    <jacoco.maven.plugin.version>0.7.9</jacoco.maven.plugin.version>
+    <maven.plugin.javadoc.version>2.10.4</maven.plugin.javadoc.version>
+    <maven.plugin.nexus.version>1.6.8</maven.plugin.nexus.version>
+    <maven.plugin.source.version>3.0.1</maven.plugin.source.version>
+    <node.version>v7.2.1</node.version>
+    <npm.version>4.1.2</npm.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <skip.integration.test>false</skip.integration.test>
+    <slf4j.version>1.7.24</slf4j.version>
+  </properties>
+
+  <inceptionYear>2017</inceptionYear>
+  <organization>
+    <name>Agile Renovation</name>
+    <url>http://www.agilerenovation.com</url>
+  </organization>
+
+  <licenses>
+    <license>
+      <name>Apache License version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <id>zszs</id>
+      <name>Zsolt Zsuffa</name>
+      <email>zsolt . zsuffa @ gmail.com</email>
+      <url>http://www.linkedin.com/in/zsoltzsuffa</url>
+      <timezone>0</timezone>
+    </developer>
+  </developers>
+
+  <contributors>
+  </contributors>
+
+  <scm>
+    <url>https://github.com/ZsZs/FitPrint</url>
+    <connection>scm:git:git://github.com/ZsZs/FitPrint.git</connection>
+    <developerConnection>scm:git:ssh//git@github.com/ZsZs/FitPrint.git</developerConnection>
+    <tag>${project.version}</tag>
+  </scm>
+
+  <issueManagement>
+    <url>https://github.com/ZsZs/FitPrint/issues</url>
+    <system>GitHub Issues</system>
+  </issueManagement>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${commons.lang3.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>com.versioneye</groupId>
+          <artifactId>versioneye-maven-plugin</artifactId>
+          <version>3.11.1</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.6.1</version>
+          <configuration>
+            <source>1.8</source>
+            <target>1.8</target>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>3.0.1</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>1.6.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.5.3</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${jacoco.maven.plugin.version}</version>
+          <executions>
+            <execution>
+              <id>prepare-agent-unit</id>
+              <goals>
+                <goal>prepare-agent</goal>
+              </goals>
+              <configuration>
+                <destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
+              </configuration>
+            </execution>
+
+            <execution>
+              <id>prepare-agent-integration</id>
+              <goals>
+                <goal>prepare-agent-integration</goal>
+              </goals>
+              <configuration>
+                <propertyName>argLine</propertyName>
+                <destFile>${project.build.directory}/coverage-reports/jacoco-it.exec</destFile>
+              </configuration>
+            </execution>
+
+            <execution>
+              <id>report-unit</id>
+              <goals>
+                <goal>report</goal>
+              </goals>
+              <configuration>
+                <dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
+                <outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
+              </configuration>
+            </execution>
+
+            <execution>
+              <id>report-integration</id>
+              <goals>
+                <goal>report-integration</goal>
+              </goals>
+              <configuration>
+                <dataFile>${project.build.directory}/coverage-reports/jacoco-it.exec</dataFile>
+                <outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
+              </configuration>
+            </execution>
+            <!-- <execution> <id>check</id> <goals> <goal>check</goal> </goals> </execution> -->
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>com.processpuzzle.fitnesse</groupId>
+          <artifactId>fitnesse-launcher-maven-plugin</artifactId>
+          <version>${fitnesse.maven.plugin.version}</version>
+          <configuration>
+            <properties>
+            </properties>
+            <maxErrorsToConsole>100</maxErrorsToConsole>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>release-sign-artifacts</id>
+      <activation>
+        <property>
+          <name>performRelease</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>${maven.plugin.source.version}</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>${maven.plugin.javadoc.version}</version>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.6</version>
+            <configuration>
+              <mavenExecutorId>forked-path</mavenExecutorId>
+            </configuration>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <version>${maven.plugin.nexus.version}</version>
+            <extensions>true</extensions>
+            <configuration>
+              <serverId>sonatype-nexus-staging</serverId>
+              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+              <autoReleaseAfterClose>true</autoReleaseAfterClose>
+            </configuration>
+          </plugin>
+
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>sonatype-nexus-snapshots</id>
+      <name>Nexus Snapshot Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+
+    <repository>
+      <id>sonatype-nexus-staging</id>
+      <name>Nexus Staging Repository</name>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+    </repository>
+
+    <site>
+      <id>git-hub-fit-print</id>
+      <name>FitPrint Wiki</name>
+      <url>https://github.com/ZsZs/FitPrint/wiki</url>
+    </site>
+
+  </distributionManagement>
+  
+</project>

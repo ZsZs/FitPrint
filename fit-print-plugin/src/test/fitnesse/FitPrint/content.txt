@@ -1,0 +1,15 @@
+!1 !c !-FitPrint-!
+!4 !c Dokumentation and Acceptance Tests
+
+!startFitToPdf
+some text
+another line of text
+!endFitToPdf
+
+!*> '''Variables Defined'''
+!define TEST_SYSTEM {slim}
+!define FitNesseFilesRoot {./target/fitnesse/fitnesseroot/files}
+*!
+!*> '''Classpath'''
+${maven.classpath}
+*!
