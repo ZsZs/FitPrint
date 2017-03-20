@@ -1,8 +1,10 @@
 !1 !c !-FitPrint-!
 !4 !c Dokumentation and Acceptance Tests
 
-!fitToPdf
-
+!startFitToPdf
+Some text
+text in new line
+!endFitToPdf
 
 
 !*> '''Variables Defined'''

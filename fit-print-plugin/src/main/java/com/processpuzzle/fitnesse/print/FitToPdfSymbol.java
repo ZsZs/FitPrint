@@ -28,7 +28,7 @@ public class FitToPdfSymbol extends SymbolType implements Rule, Translation {
 
    // public accessors and mutators
    @Override public String toTarget( Translator translator, Symbol symbol ) {
-      return "Print wiki pages as PDF or Word.";
+      return "<a href='/files'>View PDF</a>";
    }
 
    @Override public Maybe<Symbol> parse( Symbol current, Parser parser ) {
