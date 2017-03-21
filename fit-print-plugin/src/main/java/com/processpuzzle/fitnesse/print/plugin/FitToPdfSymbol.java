@@ -1,6 +1,6 @@
-package com.processpuzzle.fitnesse.print;
+package com.processpuzzle.fitnesse.print.plugin;
 
-import com.processpuzzle.fitnesse.print.GraphicsWikiParserException;
+import com.processpuzzle.fitnesse.print.plugin.FitToPdfException;
 
 import fitnesse.wikitext.parser.Matcher;
 import fitnesse.wikitext.parser.Maybe;
@@ -34,27 +34,27 @@ public class FitToPdfSymbol extends SymbolType implements Rule, Translation {
    @Override public Maybe<Symbol> parse( Symbol current, Parser parser ) {
       try{
          this.parseFromWiki( parser );
-      }catch( GraphicsWikiParserException e ){
+      }catch( FitToPdfException e ){
          e.printStackTrace();
       }
       return new Maybe<Symbol>( current );
    }
    
-   public void parseFromWiki(Parser parser) throws GraphicsWikiParserException {
+   public void parseFromWiki(Parser parser) throws FitToPdfException {
 
       String propertiesText = parser.parseToAsString(SymbolType.Newline).getValue();
       
       if (parser.atEnd()) {
-          throw new GraphicsWikiParserException("No new line after !start" + SYMBOL_NAME);
+          throw new FitToPdfException("No new line after !start" + SYMBOL_NAME);
       }
       
       content = parser.parseLiteral( this.symbolEnd );
       if (parser.atEnd()) {
-          throw new GraphicsWikiParserException("No !end" + SYMBOL_NAME + " found");
+          throw new FitToPdfException("No !end" + SYMBOL_NAME + " found");
       }
 
       if (content == null || content.isEmpty()) {
-          throw new GraphicsWikiParserException("No content for " + SYMBOL_NAME);
+          throw new FitToPdfException("No content for " + SYMBOL_NAME);
       }
       
       System.out.println( "propertiesText: " + propertiesText );

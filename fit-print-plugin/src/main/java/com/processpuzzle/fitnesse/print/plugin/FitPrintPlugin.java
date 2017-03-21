@@ -1,4 +1,4 @@
-package com.processpuzzle.fitnesse.print;
+package com.processpuzzle.fitnesse.print.plugin;
 
 import fitnesse.plugins.PluginException;
 import fitnesse.plugins.PluginFeatureFactoryBase;
