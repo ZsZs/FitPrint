@@ -12,7 +12,7 @@ public class PDFRendererTest {
     private PDFRenderer renderer;
     
     @Before public void beforeEachTests(){
-        this.renderer = new PDFRenderer( "http://fitnesse.fit-connect.processpuzzle.com/FitNesseConnect", "output.pdf" );
+        this.renderer = new PDFRenderer( "classpath:TestInputFile.html", "OutputFile.pdf" );
     }
     
     @Test public void render_generatesPdfFile() throws Exception{
