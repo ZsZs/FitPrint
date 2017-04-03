@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -17,8 +18,8 @@ public class FitNesseClientTest {
         client = new FitNesseClient( "http://fitnesse.fit-connect.processpuzzle.com" );        
     }
     
-    @Test public void retrievePage_returnsHtmlSourceOfPage(){
-        String htmlSource = client.retrievePage( "FrontPage" );
+    @Ignore @Test public void retrievePage_returnsHtmlSourceOfPage(){
+        String htmlSource = client.retrievePage( "FitNesseConnect" );
         
         assertThat( htmlSource, notNullValue() );
     }
