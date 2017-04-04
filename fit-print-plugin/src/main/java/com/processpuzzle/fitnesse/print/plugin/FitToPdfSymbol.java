@@ -1,6 +1,6 @@
 package com.processpuzzle.fitnesse.print.plugin;
 
-import com.processpuzzle.fitnesse.print.plugin.FitToPdfException;
+import org.springframework.stereotype.Component;
 
 import fitnesse.wikitext.parser.Matcher;
 import fitnesse.wikitext.parser.Maybe;
@@ -11,6 +11,7 @@ import fitnesse.wikitext.parser.SymbolType;
 import fitnesse.wikitext.parser.Translation;
 import fitnesse.wikitext.parser.Translator;
 
+@Component
 public class FitToPdfSymbol extends SymbolType implements Rule, Translation {
    private static final String SYMBOL_NAME = "FitToPdf";
    private String content;

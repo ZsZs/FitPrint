@@ -14,42 +14,41 @@ import fitnesse.wikitext.parser.SymbolProvider;
 @SpringBootApplication
 public class FitPrintPlugin extends PluginFeatureFactoryBase {
    private static ApplicationContext applicationContext;
-   
+
    // constructors
-   public FitPrintPlugin(){}
-   
+   public FitPrintPlugin() {}
+
    // public accessors and mutators
    public void registerSymbolTypes( SymbolProvider symbolProvider ) throws PluginException {
-      configureApplicationContext();
-      symbolProvider.add( new FitToPdfSymbol() );
-   }
-   
-   public void run(){
-      startUp();
+      run();
+      symbolProvider.add( applicationContext.getBean( FitToPdfSymbol.class ) );
    }
 
-   @PreDestroy
-   public void shutDown() {
-      applicationContext = null;
-   }
-   
-   public void startUp(){
-      configureApplicationContext();
+   public void run() {
+      startUp();
    }
 
    public void stop() {
       SpringApplication.exit( applicationContext );
    }
-   
+
    // Properties
    // @formatter:off
    public ApplicationContext getApplicationContext() { return applicationContext; }
    // @formatter:on
-   
+
    // protected, private helper methods
-   private static void configureApplicationContext(){
+   private static void configureApplicationContext() {
       if( applicationContext == null ){
-         applicationContext = new SpringApplicationBuilder( FitPrintPlugin.class ).web( false ).run( new String[]{} );         
+         applicationContext = new SpringApplicationBuilder( FitPrintPlugin.class ).web( false ).run( new String[] {} );
       }
+   }
+
+   @PreDestroy private void shutDown() {
+      applicationContext = null;
+   }
+
+   private void startUp() {
+      configureApplicationContext();
    }
 }
