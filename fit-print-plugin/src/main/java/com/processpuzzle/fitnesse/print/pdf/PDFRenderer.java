@@ -10,7 +10,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
-import java.util.UUID;
 
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
@@ -20,6 +19,7 @@ import org.xhtmlrenderer.pdf.ITextRenderer;
 import org.xhtmlrenderer.protocols.data.Handler;
 
 import com.lowagie.text.DocumentException;
+import com.processpuzzle.fitnesse.print.file.TempFile;
 
 class DataURLStreamHandlerFactory implements URLStreamHandlerFactory {
    public URLStreamHandler createURLStreamHandler( String protocol ) {
@@ -35,34 +35,9 @@ public class PDFRenderer implements ResourceLoaderAware {
    private ResourceLoader resourceLoader;
    private String outputPath;
    private String sourcePath;
-   private String tempFilePath;
+   private TempFile tempFile;
 
    // constructors
-   public static void main( String[] args ) throws Exception {
-      // Check to make sure everything is as it should be
-      if( args.length < 2 ){
-         throw new Exception( "Invalid arguments. Renderer requires a path to an HTML File (source) and a path to a PDF File (destination)." );
-      }
-
-      // Set up command line arguments
-      int filesArgIndex = 0;
-      for( int i = 0; i < args.length; i++ ){
-         if( args[i].equals( "--input-encoding" ) && (i < args.length - 1) ){
-            i++;
-            filesArgIndex += 2;
-         }
-         if( args[i].equals( "--output-encoding" ) && (i < args.length - 1) ){
-            i++;
-            filesArgIndex += 2;
-         }
-      }
-      String inputFile = args[filesArgIndex];
-      String pdfFilePath = args[filesArgIndex + 1];
-
-      PDFRenderer renderer = new PDFRenderer();
-      renderer.render( inputFile, pdfFilePath );
-   }
-
    public PDFRenderer() {}
 
    // public accessors and mutators
@@ -74,7 +49,7 @@ public class PDFRenderer implements ResourceLoaderAware {
       generateTempFilePath();
 
       InputStream inputStream = this.resourceLoader.getResource( this.sourcePath ).getInputStream();
-      OutputStream outputStream = new FileOutputStream( tempFilePath );
+      OutputStream outputStream = new FileOutputStream( tempFile.getPath() );
       cleanUpHtml( inputStream, outputStream );
       createPdf( outputStream );
       cleanUpTempFile();
@@ -97,12 +72,12 @@ public class PDFRenderer implements ResourceLoaderAware {
    }
 
    private void cleanUpTempFile() {
-      File tempFile = new File( this.tempFilePath );
+      File tempFile = new File( this.tempFile.getPath() );
       tempFile.delete();
    }
 
    private void createPdf( OutputStream outputStream ) throws MalformedURLException, FileNotFoundException, DocumentException, IOException {
-      String url = new File( tempFilePath ).toURI().toURL().toString();
+      String url = new File( tempFile.getPath() ).toURI().toURL().toString();
       OutputStream outputPDF = new FileOutputStream( this.outputPath );
 
       // Create the renderer and point it to the XHTML document
@@ -119,10 +94,7 @@ public class PDFRenderer implements ResourceLoaderAware {
    }
 
    private void generateTempFilePath() {
-      String property = "java.io.tmpdir";
-      String tempDir = System.getProperty(property);
-      UUID uniqueID = UUID.randomUUID();
-      this.tempFilePath = tempDir + "/" + uniqueID.toString() + ".html";
+      this.tempFile = new TempFile( ".html" );
    }
 
    private void setURLStreamHandlerFactory() {

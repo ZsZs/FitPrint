@@ -1,0 +1,28 @@
+sudo: required
+
+language: java
+jdk: oraclejdk8
+install: true
+
+env:
+- local.maven.repository=$HOME/.m2
+
+services:
+  - docker
+
+addons:
+  sonarqube:
+    organization: "processpuzzle"
+    branches :
+    - master
+
+cache:
+  directories:
+  - $HOME/.m2
+  - $HOME/.sonar/cache
+  
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
+notifications:
+  email: false

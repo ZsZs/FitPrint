@@ -5,13 +5,17 @@ import javax.annotation.PreDestroy;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
 
 import fitnesse.plugins.PluginException;
 import fitnesse.plugins.PluginFeatureFactoryBase;
 import fitnesse.wikitext.parser.SymbolProvider;
 
 @SpringBootApplication
+@ComponentScan( basePackages = {"com.processpuzzle.fitnesse.print.client", "com.processpuzzle.fitnesse.print.file", "com.processpuzzle.fitnesse.print.pdf", "com.processpuzzle.fitnesse.print.plugin" })
+@EnableConfigurationProperties
 public class FitPrintPlugin extends PluginFeatureFactoryBase {
    private static ApplicationContext applicationContext;
 

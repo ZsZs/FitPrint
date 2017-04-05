@@ -1,5 +1,10 @@
 package com.processpuzzle.fitnesse.print.plugin;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.Properties;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fitnesse.wikitext.parser.Matcher;
@@ -15,6 +20,9 @@ import fitnesse.wikitext.parser.Translator;
 public class FitToPdfSymbol extends SymbolType implements Rule, Translation {
    private static final String SYMBOL_NAME = "FitToPdf";
    private String content;
+   private String displayText = "<a href='/files'>View PDF</a>";
+   private Properties fitToPdfProperties;
+   @Autowired FitToPdfTranslation fitToPdfTranslation;
    private final SymbolType symbolEnd;
 
    // constructors
@@ -29,36 +37,43 @@ public class FitToPdfSymbol extends SymbolType implements Rule, Translation {
 
    // public accessors and mutators
    @Override public String toTarget( Translator translator, Symbol symbol ) {
-      return "<a href='/files'>View PDF</a>";
+      weaveInFilePath(  this.fitToPdfTranslation.translate( translator.getPage(), fitToPdfProperties ));
+      return displayText;
    }
 
    @Override public Maybe<Symbol> parse( Symbol current, Parser parser ) {
-      try{
-         this.parseFromWiki( parser );
-      }catch( FitToPdfException e ){
-         e.printStackTrace();
-      }
+      this.parseFromWiki( parser );
+      this.parsePropertiesString();
       return new Maybe<Symbol>( current );
    }
-   
-   public void parseFromWiki(Parser parser) throws FitToPdfException {
 
-      String propertiesText = parser.parseToAsString(SymbolType.Newline).getValue();
-      
-      if (parser.atEnd()) {
-          throw new FitToPdfException("No new line after !start" + SYMBOL_NAME);
-      }
-      
-      content = parser.parseLiteral( this.symbolEnd );
-      if (parser.atEnd()) {
-          throw new FitToPdfException("No !end" + SYMBOL_NAME + " found");
-      }
+   // protected, private helper methods
+   private void parseFromWiki( Parser parser ) {
+      parser.parseToAsString( SymbolType.Newline ).getValue();
 
-      if (content == null || content.isEmpty()) {
-          throw new FitToPdfException("No content for " + SYMBOL_NAME);
+      if( parser.atEnd() ){
+         this.displayText = "No new line after !start" + SYMBOL_NAME;
+      }else{
+         this.content = parser.parseLiteral( this.symbolEnd );
+
+         if( parser.atEnd() ){
+            this.displayText = "No !end" + SYMBOL_NAME + " found";
+         }else if( this.content == null || this.content.isEmpty() ){
+            this.displayText = "No content for " + SYMBOL_NAME;
+         }
       }
-      
-      System.out.println( "propertiesText: " + propertiesText );
-      System.out.println( "content: " + this.content );
-  }
+   }
+
+   private Properties parsePropertiesString() {
+      this.fitToPdfProperties = new Properties();
+      try{
+         fitToPdfProperties.load( new StringReader( this.content ));
+      }catch( IOException e ){
+         this.displayText = "Fit to PDF configuration properties expected like: includeChildPages=true";
+      }
+      return fitToPdfProperties;
+   }
+
+   private void weaveInFilePath( String translate ) {
+   }
 }

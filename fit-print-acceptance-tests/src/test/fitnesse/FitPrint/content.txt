@@ -2,8 +2,8 @@
 !4 !c Dokumentation and Acceptance Tests
 
 !startFitToPdf
-Some text
-text in new line
+printChildPages = true
+printRootPage = false
 !endFitToPdf
 
 
