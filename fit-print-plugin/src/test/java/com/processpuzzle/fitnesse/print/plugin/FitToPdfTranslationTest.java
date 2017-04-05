@@ -38,11 +38,16 @@ public class FitToPdfTranslationTest {
    @Before public void beforeEachTests() {
       when( currentPage.getName() ).thenReturn( CURRENT_PAGE );
       when( currentPage.getFullName() ).thenReturn( CURRENT_PAGE );
+      when( fitNesseClient.verifyFileExist( anyString() )).thenReturn( false );
       when( fitNesseClient.retrievePage( CURRENT_PAGE )).thenReturn( "something" );
       
       outputFilePath = this.translation.translate( currentPage, properties );
    }
 
+   @Test public void traslate_checkesIfFileAlreadyGenerated(){      
+      verify( fitNesseClient ).verifyFileExist( anyString() );
+   }
+   
    @Test public void traslate_retrievesAndSavesCurrentPage() {      
       verify( fitNesseClient ).retrievePage( CURRENT_PAGE );
    }

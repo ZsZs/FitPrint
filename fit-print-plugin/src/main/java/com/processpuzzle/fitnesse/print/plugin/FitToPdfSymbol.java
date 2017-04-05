@@ -2,6 +2,7 @@ package com.processpuzzle.fitnesse.print.plugin;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.text.MessageFormat;
 import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,11 @@ import fitnesse.wikitext.parser.Translator;
 
 @Component
 public class FitToPdfSymbol extends SymbolType implements Rule, Translation {
+   private static final String DISPLAY_TEXT_TEMPLATE = "<a href=\"/files/{0}\">View PDF</a>";
    private static final String SYMBOL_NAME = "FitToPdf";
    private String content;
-   private String displayText = "<a href='/files'>View PDF</a>";
-   private Properties fitToPdfProperties;
+   private String displayText;
+   @Autowired private Properties fitToPdfProperties;
    @Autowired FitToPdfTranslation fitToPdfTranslation;
    private final SymbolType symbolEnd;
 
@@ -37,7 +39,7 @@ public class FitToPdfSymbol extends SymbolType implements Rule, Translation {
 
    // public accessors and mutators
    @Override public String toTarget( Translator translator, Symbol symbol ) {
-      weaveInFilePath(  this.fitToPdfTranslation.translate( translator.getPage(), fitToPdfProperties ));
+      weaveInFilePath( this.fitToPdfTranslation.translate( translator.getPage(), fitToPdfProperties ) );
       return displayText;
    }
 
@@ -46,6 +48,11 @@ public class FitToPdfSymbol extends SymbolType implements Rule, Translation {
       this.parsePropertiesString();
       return new Maybe<Symbol>( current );
    }
+
+   // properties
+   // @formatter:off
+   public String getDisplayText(){ return displayText; }
+   // @formatter:on
 
    // protected, private helper methods
    private void parseFromWiki( Parser parser ) {
@@ -65,15 +72,15 @@ public class FitToPdfSymbol extends SymbolType implements Rule, Translation {
    }
 
    private Properties parsePropertiesString() {
-      this.fitToPdfProperties = new Properties();
       try{
-         fitToPdfProperties.load( new StringReader( this.content ));
+         fitToPdfProperties.load( new StringReader( this.content ) );
       }catch( IOException e ){
          this.displayText = "Fit to PDF configuration properties expected like: includeChildPages=true";
       }
       return fitToPdfProperties;
    }
 
-   private void weaveInFilePath( String translate ) {
+   private void weaveInFilePath( String outputFilePath ) {
+      this.displayText = MessageFormat.format( DISPLAY_TEXT_TEMPLATE, outputFilePath );
    }
 }
