@@ -1,5 +1,6 @@
 package com.processpuzzle.fitnesse.print.file;
 
+import java.io.File;
 import java.util.UUID;
 
 public class TempFile {
@@ -20,6 +21,7 @@ public class TempFile {
    
    // properties
    // @formatter:off
+   public File getFile() { return new File( tempFilePath ); }
    public String getPath() { return this.tempFilePath; }
    public String getSystemTempFolder() { return systemTempFolder; }
    // @formatter:on
@@ -33,5 +35,6 @@ public class TempFile {
       UUID uniqueID = UUID.randomUUID();
       this.tempFilePath = this.systemTempFolder + "/" + uniqueID.toString() + this.fileExtension;
    }
+
 
 }
