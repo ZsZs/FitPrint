@@ -47,9 +47,10 @@ public class FitToPdfTranslation {
             renderHtmlToPdf();
             uploadPdfToFitNesse();
          }
-         tearDownTranslation();
       }catch( DocumentException | IOException | FitToPdfException e ){
          logger.error( "Could not tranlate page: " + currentPage.getFullName() + " to PDF.", e );
+      }finally{
+         tearDownTranslation();         
       }
 
       return pdfResourcePathInFitNesse;
@@ -102,9 +103,9 @@ public class FitToPdfTranslation {
    }
 
    private void tearDownTranslation() {
+      inProcessing = false;
       inputFile.delete();
       outputFile.delete();
-      inProcessing = false;
    }
 
    private void uploadPdfToFitNesse() {

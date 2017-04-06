@@ -12,6 +12,8 @@ import java.net.URL;
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.w3c.tidy.Tidy;
 import org.xhtmlrenderer.pdf.ITextRenderer;
@@ -30,6 +32,7 @@ class DataURLStreamHandlerFactory implements URLStreamHandlerFactory {
 
 @Component
 public class PDFRenderer {
+   private static final Logger logger = LoggerFactory.getLogger( PDFRenderer.class );
    private File outputPath;
    private File sourcePath;
    private File tempFile;
@@ -45,11 +48,14 @@ public class PDFRenderer {
       setURLStreamHandlerFactory();
       generateTempFilePath();
 
-      InputStream inputStream = new FileInputStream( this.sourcePath );
-      OutputStream outputStream = new FileOutputStream( tempFile.getPath() );
-      cleanUpHtml( inputStream, outputStream );
-      createPdf( outputStream );
-      cleanUpTempFile();
+      try{
+         cleanUpHtml();
+         createPdf();
+      }catch( Exception e ){
+         logger.error( "Failed to render: " + sourceFile.getAbsolutePath(), e );
+      }finally{
+         cleanUpTempFile();         
+      }
    }
 
    // properties
@@ -57,7 +63,10 @@ public class PDFRenderer {
    // @formatter:on
 
    // protected, private helper methods
-   private void cleanUpHtml( InputStream inputStream, OutputStream outputStream ) {
+   private void cleanUpHtml() throws IOException {
+      InputStream inputStream = new FileInputStream( this.sourcePath );
+      OutputStream outputStream = new FileOutputStream( tempFile.getPath() );
+      
       Tidy htmlCleaner = new Tidy();
       if( this.sourcePath != null )
          htmlCleaner.setInputEncoding( this.sourcePath.getAbsolutePath() );
@@ -65,6 +74,9 @@ public class PDFRenderer {
          htmlCleaner.setOutputEncoding( this.outputPath.getAbsolutePath() );
       htmlCleaner.setXHTML( true );
       htmlCleaner.parse( inputStream, outputStream );
+      
+      inputStream.close();
+      outputStream.close();
    }
 
    private void cleanUpTempFile() {
@@ -72,7 +84,7 @@ public class PDFRenderer {
       tempFile.delete();
    }
 
-   private void createPdf( OutputStream outputStream ) throws MalformedURLException, FileNotFoundException, DocumentException, IOException {
+   private void createPdf() throws MalformedURLException, FileNotFoundException, DocumentException, IOException {
       String url = new File( tempFile.getPath() ).toURI().toURL().toString();
       OutputStream outputPDF = new FileOutputStream( this.outputPath );
 
@@ -85,7 +97,6 @@ public class PDFRenderer {
       renderer.createPDF( outputPDF );
 
       // Close the streams (and don't cross them!)
-      outputStream.close();
       outputPDF.close();
    }
 

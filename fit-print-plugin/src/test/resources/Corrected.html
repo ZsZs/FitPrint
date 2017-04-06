@@ -2,7 +2,7 @@
 <html>
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 
   <title>FitPrint</title>
     <!--[if lt IE 9]>
@@ -19,10 +19,10 @@
   <link rel="stylesheet" type="text/css" href="/files/fitnesse/css/fitnesse_wiki.css" />
   <link rel="stylesheet" type="text/css" href="/files/fitnesse/css/fitnesse_pages.css" />
   <link rel="stylesheet" type="text/css" href="/files/fitnesse/wysiwyg/wysiwyg.css" media="screen"/>
-  <link rel="stylesheet" type="text/css" href="/files/fitnesse/bootstrap/css/fitnesse-bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="/files/fitnesse/bootstrap/css/fitnesse-bootstrap.css"/>
   <link rel="stylesheet" type="text/css" href="/files/fitnesse/question.mark/question.mark.css" />
 
-  <script type="text/javascript" src="http://gc.kis.v2.scr.kaspersky-labs.com/89D70CD2-EC3E-F846-AD24-A25143BA4284/main.js" charset="UTF-8"></script><script src="/files/fitnesse/javascript/jquery-1.11.3.min.js" type="text/javascript"></script>
+  <script src="/files/fitnesse/javascript/jquery-1.11.3.min.js" type="text/javascript"></script>
   <script src="/files/fitnesse/javascript/fitnesse.js" type="text/javascript"></script>
 
   <script src="/files/fitnesse/bootstrap/js/bootstrap.js" type="text/javascript"></script>
@@ -31,7 +31,7 @@
  </head>
  <body class="wikiPage">
 
-  <nav class="navbar-fixed-top " role="navigation">
+  <div id='nav' class="navbar-fixed-top " role="navigation">
    <div class="navbar navbar-default">
    <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
@@ -89,15 +89,15 @@
 <ol class="breadcrumb">
  <li>FitPrint</li>
 </ol>
-  </nav>
+  </div>
 
-  <header>
-      </header>
+  <div id='header'>
+      </div>
   
-  <article>
+  <div id='article'>
    <h1><center>FitPrint</center></h1>
 <h4><center>Dokumentation and Acceptance Tests</center></h4>
-<br/><a href="/files/FitToPdf/FitPrint.pdf">View PDF</a><br/><br/><br/><div class="collapsible closed"><ul><li><a href='#' class='expandall'>Expand</a></li><li><a href='#' class='collapseall'>Collapse</a></li></ul>
+<br/><a href="/files/">View PDF</a><br/><br/><br/><div class="collapsible closed"><ul><li><a href='#' class='expandall'>Expand</a></li><li><a href='#' class='collapseall'>Collapse</a></li></ul>
   <p class="title"><b>Variables Defined</b></p>
   <div><span class="meta">variable defined: TEST_SYSTEM=slim</span>
 <br/><span class="meta">variable defined: FitNesseFilesRoot=./target/fitnesse/fitnesseroot/files</span>
@@ -133,7 +133,7 @@
                         <span class="help-key-def">Add new page</span>
                     </li>
 
-                    <li <h2> In Edit Mode </h2></li>
+                    <li><h2> In Edit Mode </h2></li>
                     <li class="help-key-unit">
                         <kbd class="help-key"><span>CTRL+s</span></kbd>
                         <span class="help-key-def">Save page</span>
@@ -143,7 +143,7 @@
                         <span class="help-key-def">Cancel edit</span>
                     </li>
 
-                    <li <h2>Tools</h2></li>
+                    <li><h2>Tools</h2></li>
                     <li class="help-key-unit">
                         <kbd class="help-key"><span>p</span></kbd>
                         <span class="help-key-def">Properties</span>
@@ -169,7 +169,7 @@
                         <span class="help-key-def">Open search page</span>
                     </li>
 
-                    <li <h2>Go To</h2></li>
+                    <li><h2>Go To</h2></li>
                     <li class="help-key-unit">
                         <kbd class="help-key"><span>g</span> <span>u</span></kbd>
                         <span class="help-key-def">User Guide</span>
@@ -215,10 +215,10 @@
     Mousetrap.bind('g f', function() { window.open(".FitNesse.FullReferenceGuide", "_blank"); });
     Mousetrap.bind('g c', function() { window.location.href ="RecentChanges"; });
   
-</script>  </article>
+</script>  </div>
   
-    <footer>
-   <a href="FrontPage">Front Page</a> | <a href="FitNesse.UserGuide">User Guide</a> | <a href="root">root</a> (for global !path's, <i>etc.</i>) | Press '?' for keyboard shortcuts <a href="PageFooter?edit">(edit)</a>  </footer>
+    <div id='footer'>
+   <a href="FrontPage">Front Page</a> | <a href="FitNesse.UserGuide">User Guide</a> | <a href="root">root</a> (for global !path's, <i>etc.</i>) | Press '?' for keyboard shortcuts <a href="PageFooter?edit">(edit)</a>  </div>
     
  </body>
 </html>

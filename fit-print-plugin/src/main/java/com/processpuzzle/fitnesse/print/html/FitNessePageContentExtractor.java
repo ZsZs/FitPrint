@@ -1,5 +1,11 @@
 package com.processpuzzle.fitnesse.print.html;
 
+import static com.processpuzzle.fitnesse.print.html.XmlUtil.asList;
+
+import java.io.ByteArrayInputStream;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -11,6 +17,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang.StringUtils;
@@ -22,35 +29,19 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.tidy.Tidy;
 
-import static com.processpuzzle.fitnesse.print.html.XmlUtil.asList;
-
-import java.io.ByteArrayInputStream;
-import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
-
 @Component
 public class FitNessePageContentExtractor {
    private static final Logger logger = LoggerFactory.getLogger( FitNessePageContentExtractor.class );
    private String strippedContent;
+   private DocumentBuilderFactory builderFactory;
+   private DocumentBuilder domParser;
+   private Document domDocument;
+   private XPath xPath;
 
    public String extractRealContent( String sourceHtml ) {
       logger.debug( "Extracting real content for FitNesse Page: " + sourceHtml );
-      DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder domParser = null;
-
-      try{
-         domParser = builderFactory.newDocumentBuilder();
-         Document domDocument = cleanUpHtml( correctFailures( sourceHtml ) );
-         XPath xPath = XPathFactory.newInstance().newXPath();
-         String expr = "//div[@id='nav']";
-         NodeList resultNodeList = (NodeList) xPath.compile( expr ).evaluate( domDocument, XPathConstants.NODESET );
-         for( Node node : asList( resultNodeList ) ){
-            strippedContent = node2String( node );
-         }
-      }catch( Exception e ){
-         logger.error( "Parsing source FitNesse document failed.", e );
-      }
-
+      parseSourceHtml( sourceHtml );
+      strippedContent();
       return strippedContent;
    }
 
@@ -63,9 +54,12 @@ public class FitNessePageContentExtractor {
    }
 
    private String correctFailures( String sourceHtml ) {
-      String[] searchList = { "<nav>", "</nav>", "<article>", "</article>", "<footer>", "</footer>" };
-      String[] replacementList = { "<div id='nav'>", "</div>", "<div id='article'>", "</div>", "<div id='footer'>", "</div>" };
+      String[] searchList = { "<header>", "</header>", "<nav ", "</nav>", "<article>", "</article>", "<footer>", "</footer>", "content=\"IE=edge\">", ".css\">", "<li <" };
+      String[] replacementList = { "<div id='header'>", "</div>", "<div id='nav' ", "</div>", "<div id='article'>", "</div>", "<div id='footer'>", "</div>", "content=\"IE=edge\"/>", ".css\"/>", "<li><" };
       String correctedHtml = StringUtils.replaceEach( sourceHtml, searchList, replacementList );
+      logger.debug( "Corrected HTML: \n" + correctedHtml );
+      System.out.println( "Corrected HTML: \n" );
+      System.out.println( correctedHtml );
       return correctedHtml;
    }
 
@@ -74,6 +68,35 @@ public class FitNessePageContentExtractor {
       Transformer transformer = TransformerFactory.newInstance().newTransformer();
       transformer.setOutputProperty( OutputKeys.OMIT_XML_DECLARATION, "yes" );
       transformer.transform( new DOMSource( node ), xmlOutput );
-      return xmlOutput.getWriter().toString();
+      String extractedHtml = xmlOutput.getWriter().toString();
+      logger.debug( "Extracted HTML: \n" + extractedHtml );
+      System.out.println( "Extracted HTML: \n" );
+      System.out.println( extractedHtml );
+      return extractedHtml;
+   }
+
+   private void strippedContent(){
+      String expr = "//div[@id='article']";
+      NodeList resultNodeList;
+      try{
+         resultNodeList = (NodeList) xPath.compile( expr ).evaluate( domDocument, XPathConstants.NODESET );
+         for( Node node : asList( resultNodeList ) ){
+            strippedContent = node2String( node );
+         }
+      }catch( XPathExpressionException | TransformerFactoryConfigurationError | TransformerException e ){
+         logger.error( "Stripping content failed.", e );
+      }
+   }
+   
+   private void parseSourceHtml( String sourceHtml ){
+      builderFactory = DocumentBuilderFactory.newInstance();
+
+      try{
+         domParser = builderFactory.newDocumentBuilder();
+         domDocument = cleanUpHtml( correctFailures( sourceHtml ) );
+         xPath = XPathFactory.newInstance().newXPath();
+      }catch( Exception e ){
+         logger.error( "Parsing source FitNesse document failed.", e );
+      }
    }
 }
