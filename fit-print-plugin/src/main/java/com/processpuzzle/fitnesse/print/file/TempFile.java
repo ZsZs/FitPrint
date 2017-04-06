@@ -3,8 +3,6 @@ package com.processpuzzle.fitnesse.print.file;
 import java.io.File;
 import java.util.UUID;
 
-import org.springframework.core.io.Resource;
-
 public class TempFile {
    private final String fileExtension;
    private String systemTempFolder;

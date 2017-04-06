@@ -11,14 +11,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest( classes = {PDFRenderer.class} )
 public class PDFRendererTest {
-   private static final String OUTPUT_PDF = "OutputFile.pdf";
-   private static final String INPUT_HTML = "classpath:TestInputFile.html";
+   private static final String OUTPUT_PDF = "target/OutputFile.pdf";
+   private static final String INPUT_HTML = "classpath:SampleFitNessePage.html";
    @Autowired private PDFRenderer renderer;
+   @Autowired private ResourceLoader resourceLoader;
 
    @Before public void beforeEachTests() {
    }
@@ -26,11 +28,10 @@ public class PDFRendererTest {
    @After public void afterEachTests(){
       File outputFile = new File( OUTPUT_PDF );
       outputFile.delete();
-      
    }
 
    @Test public void render_generatesPdfFile() throws Exception {
-      this.renderer.render( INPUT_HTML, OUTPUT_PDF );
+      this.renderer.render( resourceLoader.getResource( INPUT_HTML ).getFile(), new File( OUTPUT_PDF ));
 
       assertThat( (new File( OUTPUT_PDF )).exists(), is( true ) );
    }

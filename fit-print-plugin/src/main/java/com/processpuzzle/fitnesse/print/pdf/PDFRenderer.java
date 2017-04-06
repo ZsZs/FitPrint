@@ -1,6 +1,7 @@
 package com.processpuzzle.fitnesse.print.pdf;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -11,15 +12,12 @@ import java.net.URL;
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
 
-import org.springframework.context.ResourceLoaderAware;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import org.w3c.tidy.Tidy;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 import org.xhtmlrenderer.protocols.data.Handler;
 
 import com.lowagie.text.DocumentException;
-import com.processpuzzle.fitnesse.print.file.TempFile;
 
 class DataURLStreamHandlerFactory implements URLStreamHandlerFactory {
    public URLStreamHandler createURLStreamHandler( String protocol ) {
@@ -31,24 +29,23 @@ class DataURLStreamHandlerFactory implements URLStreamHandlerFactory {
 }
 
 @Component
-public class PDFRenderer implements ResourceLoaderAware {
-   private ResourceLoader resourceLoader;
-   private String outputPath;
-   private String sourcePath;
-   private TempFile tempFile;
+public class PDFRenderer {
+   private File outputPath;
+   private File sourcePath;
+   private File tempFile;
 
    // constructors
    public PDFRenderer() {}
 
    // public accessors and mutators
-   public void render( String sourcePath, String outputPath ) throws DocumentException, IOException {
-      this.sourcePath = sourcePath;
-      this.outputPath = outputPath;
+   public void render( File sourceFile, File outputFile ) throws DocumentException, IOException {
+      this.sourcePath = sourceFile;
+      this.outputPath = outputFile;
 
       setURLStreamHandlerFactory();
       generateTempFilePath();
 
-      InputStream inputStream = this.resourceLoader.getResource( this.sourcePath ).getInputStream();
+      InputStream inputStream = new FileInputStream( this.sourcePath );
       OutputStream outputStream = new FileOutputStream( tempFile.getPath() );
       cleanUpHtml( inputStream, outputStream );
       createPdf( outputStream );
@@ -57,16 +54,15 @@ public class PDFRenderer implements ResourceLoaderAware {
 
    // properties
    // @formatter:off
-   public void setResourceLoader(ResourceLoader resourceLoader) { this.resourceLoader = resourceLoader; }
    // @formatter:on
 
    // protected, private helper methods
    private void cleanUpHtml( InputStream inputStream, OutputStream outputStream ) {
       Tidy htmlCleaner = new Tidy();
-      if( !this.sourcePath.isEmpty() )
-         htmlCleaner.setInputEncoding( this.sourcePath );
-      if( !this.outputPath.isEmpty() )
-         htmlCleaner.setOutputEncoding( this.outputPath );
+      if( this.sourcePath != null )
+         htmlCleaner.setInputEncoding( this.sourcePath.getAbsolutePath() );
+      if( this.outputPath != null )
+         htmlCleaner.setOutputEncoding( this.outputPath.getAbsolutePath() );
       htmlCleaner.setXHTML( true );
       htmlCleaner.parse( inputStream, outputStream );
    }
@@ -93,8 +89,8 @@ public class PDFRenderer implements ResourceLoaderAware {
       outputPDF.close();
    }
 
-   private void generateTempFilePath() {
-      this.tempFile = new TempFile( ".html" );
+   private void generateTempFilePath() throws IOException {
+      this.tempFile = File.createTempFile( "cleaned-source-", ".html" );
    }
 
    private void setURLStreamHandlerFactory() {

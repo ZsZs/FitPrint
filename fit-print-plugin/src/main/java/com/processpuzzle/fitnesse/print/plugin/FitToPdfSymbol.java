@@ -5,6 +5,8 @@ import java.io.StringReader;
 import java.text.MessageFormat;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +23,7 @@ import fitnesse.wikitext.parser.Translator;
 public class FitToPdfSymbol extends SymbolType implements Rule, Translation {
    private static final String DISPLAY_TEXT_TEMPLATE = "<a href=\"/files/{0}\">View PDF</a>";
    private static final String SYMBOL_NAME = "FitToPdf";
+   private static final Logger logger = LoggerFactory.getLogger( FitToPdfSymbol.class );
    private String content;
    private String displayText;
    @Autowired private Properties fitToPdfProperties;
@@ -35,6 +38,7 @@ public class FitToPdfSymbol extends SymbolType implements Rule, Translation {
 
       wikiRule( this );
       htmlTranslation( this );
+      logger.debug( "FitToPdfSymbol is instantiated and initialized." );
    }
 
    // public accessors and mutators
@@ -46,6 +50,7 @@ public class FitToPdfSymbol extends SymbolType implements Rule, Translation {
    @Override public Maybe<Symbol> parse( Symbol current, Parser parser ) {
       this.parseFromWiki( parser );
       this.parsePropertiesString();
+      logger.debug( "Parsed content: " + this.content );
       return new Maybe<Symbol>( current );
    }
 

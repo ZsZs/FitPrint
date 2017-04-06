@@ -2,6 +2,8 @@ package com.processpuzzle.fitnesse.print.plugin;
 
 import javax.annotation.PreDestroy;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -14,9 +16,10 @@ import fitnesse.plugins.PluginFeatureFactoryBase;
 import fitnesse.wikitext.parser.SymbolProvider;
 
 @SpringBootApplication
-@ComponentScan( basePackages = {"com.processpuzzle.fitnesse.print.client", "com.processpuzzle.fitnesse.print.file", "com.processpuzzle.fitnesse.print.pdf", "com.processpuzzle.fitnesse.print.plugin" })
+@ComponentScan( basePackages = {"com.processpuzzle.fitnesse.print.client", "com.processpuzzle.fitnesse.print.html", "com.processpuzzle.fitnesse.print.file", "com.processpuzzle.fitnesse.print.pdf", "com.processpuzzle.fitnesse.print.plugin" })
 @EnableConfigurationProperties
 public class FitPrintPlugin extends PluginFeatureFactoryBase {
+   private static final Logger logger = LoggerFactory.getLogger( FitPrintPlugin.class );
    private static ApplicationContext applicationContext;
 
    // constructors
@@ -26,6 +29,7 @@ public class FitPrintPlugin extends PluginFeatureFactoryBase {
    public void registerSymbolTypes( SymbolProvider symbolProvider ) throws PluginException {
       run();
       symbolProvider.add( applicationContext.getBean( FitToPdfSymbol.class ) );
+      logger.info( "FitPrintPlugin started successfully." );
    }
 
    public void run() {

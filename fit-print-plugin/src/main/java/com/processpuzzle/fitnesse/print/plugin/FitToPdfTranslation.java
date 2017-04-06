@@ -1,79 +1,118 @@
 package com.processpuzzle.fitnesse.print.plugin;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import com.lowagie.text.DocumentException;
 import com.processpuzzle.fitnesse.print.client.FitNesseClient;
-import com.processpuzzle.fitnesse.print.file.TempFile;
+import com.processpuzzle.fitnesse.print.html.FitNessePageContentExtractor;
 import com.processpuzzle.fitnesse.print.pdf.PDFRenderer;
 
 import fitnesse.wikitext.parser.SourcePage;
 
 @Component
 public class FitToPdfTranslation {
-   public static final String FIT_TO_PDF_FILES_ROOT = "/FitToPdf/";
+   public static final String FIT_TO_PDF_FILES_ROOT = "FitToPdf/";
    private static final Logger logger = LoggerFactory.getLogger( FitToPdfTranslation.class );
+   @Autowired private FitNessePageContentExtractor contentExtractor;
    private SourcePage currentPage;
    private Properties fitToPdfProperties;
    @Autowired private FitNesseClient fitNesseClient;
-   private TempFile outputFile;
+   private Boolean inProcessing = false;
+   private File outputFile;
    @Autowired private PDFRenderer pdfRenderer;
    private String pdfResourcePathInFitNesse;
-   private TempFile sourceFile;
+   private File inputFile;
 
    // public accessors and mutators
    public String translate( SourcePage currentPage, Properties properties ) {
+      if( inProcessing )
+         return "";
+      logger.debug( "Starting translation of: " + currentPage.getName() + " HTML page to PDF." );
       this.currentPage = currentPage;
       this.fitToPdfProperties = properties;
-      setUpTranslation();
 
       try{
+         setUpTranslation();
          if( !verifyPdfExist() ){
             compileSourceHtml();
             renderHtmlToPdf();
             uploadPdfToFitNesse();
          }
-      }catch( DocumentException | IOException e ){
-         logger.error( "Could not tranlate page: " + currentPage.getFullName() + " to PDF.", e );;
+         tearDownTranslation();
+      }catch( DocumentException | IOException | FitToPdfException e ){
+         logger.error( "Could not tranlate page: " + currentPage.getFullName() + " to PDF.", e );
       }
-      
+
       return pdfResourcePathInFitNesse;
    }
 
    // properties
    // @formatter:off
-   public File getOutputFile(){ return this.outputFile.getFile(); }
+   public File getOutputFile(){ return this.outputFile; }
+   public File getInputFile(){ return this.inputFile; }
    // @formatter:on
 
    // protected, private helper methods
-   private void compileSourceHtml() {
-      sourceFile.save( fitNesseClient.retrievePage( currentPage.getFullName() ) );
+   private void compileSourceHtml() throws FitToPdfException {
+      BufferedWriter bufferedWriter = null;
+      FileWriter fileWriter = null;
+
+      try{
+         String pageContent = contentExtractor.extractRealContent( fitNesseClient.retrievePage( currentPage.getFullName() ));
+         fileWriter = new FileWriter( inputFile.getAbsoluteFile(), true );
+         bufferedWriter = new BufferedWriter( fileWriter );
+         bufferedWriter.write( pageContent );
+      }catch( Exception e ){
+         String message = "Couldn't write HTML content to file: " + inputFile.getAbsolutePath();
+         logger.error( message, e );
+         throw new FitToPdfException( message, e );
+      }finally{
+         try{
+            if( bufferedWriter != null )
+               bufferedWriter.close();
+            if( fileWriter != null )
+               fileWriter.close();
+         }catch( IOException ex ){
+            ex.printStackTrace();
+         }
+      }
+      
+      logger.debug( "HTML content is saved to file: " + inputFile.getAbsolutePath() );
    }
 
    private void renderHtmlToPdf() throws DocumentException, IOException {
-      this.pdfRenderer.render( sourceFile.getPath(), outputFile.getPath() );
+      this.pdfRenderer.render( inputFile, outputFile );
    }
 
-   private void setUpTranslation() {
+   private void setUpTranslation() throws IOException {
+      inProcessing = true;
       fitNesseClient.setHostUrl( "http://localhost:9123" );
-      sourceFile = new TempFile( ".html" );
-      outputFile = new TempFile( ".pdf" );
+      inputFile = File.createTempFile( "source-", ".html" );
+      outputFile = File.createTempFile( "output", ".pdf" );
       pdfResourcePathInFitNesse = FIT_TO_PDF_FILES_ROOT + currentPage.getName() + ".pdf";
    }
 
+   private void tearDownTranslation() {
+      inputFile.delete();
+      outputFile.delete();
+      inProcessing = false;
+   }
+
    private void uploadPdfToFitNesse() {
-      fitNesseClient.uploadFile( outputFile.getFile(), pdfResourcePathInFitNesse );
+      fitNesseClient.uploadFile( outputFile, pdfResourcePathInFitNesse );
    }
 
    private boolean verifyPdfExist() {
-      return fitNesseClient.verifyFileExist( null );
+      logger.debug( "Verify if generated PDF " + pdfResourcePathInFitNesse + " already exists." );
+      return fitNesseClient.verifyFileExist( pdfResourcePathInFitNesse );
    }
 }
