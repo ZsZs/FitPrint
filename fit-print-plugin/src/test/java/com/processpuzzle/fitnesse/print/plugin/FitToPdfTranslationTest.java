@@ -71,6 +71,6 @@ public class FitToPdfTranslationTest {
    }
    
    @Test public void translate_uploadsOutputPdf(){
-      verify( fitNesseClient ).uploadFile( translation.getOutputFile(), outputFilePath );
+      verify( fitNesseClient ).uploadFile( translation.getOutputFile(), FitToPdfTranslation.FIT_TO_PDF_FILES_ROOT );
    }
 }

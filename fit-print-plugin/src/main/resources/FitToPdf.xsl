@@ -11,6 +11,7 @@
 	<xsl:template match="div[@id='helpUnderlay']"/>    
 	<xsl:template match="div[@id='footer']"/>    
 	<xsl:template match="div[@class='collapsible closed']"/>
+  <xsl:template match="a[@class='FitToPdf']"/>
 </xsl:stylesheet>
 <!-- Stylus Studio meta-information - (c) 2004-2009. Progress Software Corporation. All rights reserved.
 

@@ -1,11 +1,15 @@
 !1 !c !-FitPrint-!
 !4 !c Dokumentation and Acceptance Tests
+Well, this is a page which can be printed as a PDF. Just click on the link at the bottom of the page.
+
+This page has child pages, which has to be printed as well:
+ * [[child page one][^ChildOne]]
+ * [[child page two][^ChildTwo]] 
 
 !startFitToPdf
 printChildPages = true
 printRootPage = false
 !endFitToPdf
-
 
 !*> '''Variables Defined'''
 !define TEST_SYSTEM {slim}

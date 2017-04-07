@@ -64,8 +64,7 @@ public class FitNessePageContentExtractor {
       }
 
       logger.debug( "Stripped content HTML: \n" + strippedContent );
-      System.out.println( "Extracted HTML: \n" );
-      System.out.println( strippedContent );
+
       return strippedContent;
    }
 
@@ -88,8 +87,7 @@ public class FitNessePageContentExtractor {
             "content=\"IE=edge\"/>", ".css\"/>", "<li><", "&amp;pageTemplate", "&amp;times" };
       correctedHtml = StringUtils.replaceEach( sourceHtml, searchList, replacementList );
       logger.debug( "Corrected HTML: \n" + correctedHtml );
-      System.out.println( "Corrected HTML: \n" );
-      System.out.println( correctedHtml );
+
       return correctedHtml;
    }
 

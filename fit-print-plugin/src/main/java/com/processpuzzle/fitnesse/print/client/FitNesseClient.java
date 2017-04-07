@@ -83,7 +83,7 @@ public class FitNesseClient {
          restTemplate.getForEntity( this.hostUrl + FILES_PATH + "/" + fileResourcePath, String.class );
          fileExist = true;
       }catch( Exception e ){
-         System.out.println( e.getMessage() );
+         logger.error( "Checking file's: " + fileResourcePath + " existance failed.", e );
       }
 
       return fileExist;

@@ -33,8 +33,8 @@ class DataURLStreamHandlerFactory implements URLStreamHandlerFactory {
 @Component
 public class PDFRenderer {
    private static final Logger logger = LoggerFactory.getLogger( PDFRenderer.class );
-   private File outputPath;
-   private File sourcePath;
+   private File outputFile;
+   private File sourceFile;
    private File tempFile;
 
    // constructors
@@ -42,19 +42,16 @@ public class PDFRenderer {
 
    // public accessors and mutators
    public void render( File sourceFile, File outputFile ) throws DocumentException, IOException {
-      this.sourcePath = sourceFile;
-      this.outputPath = outputFile;
+      this.sourceFile = sourceFile;
+      this.outputFile = outputFile;
 
       setURLStreamHandlerFactory();
       generateTempFilePath();
 
       try{
-         cleanUpHtml();
          createPdf();
       }catch( Exception e ){
          logger.error( "Failed to render: " + sourceFile.getAbsolutePath(), e );
-      }finally{
-         cleanUpTempFile();         
       }
    }
 
@@ -63,34 +60,12 @@ public class PDFRenderer {
    // @formatter:on
 
    // protected, private helper methods
-   private void cleanUpHtml() throws IOException {
-      InputStream inputStream = new FileInputStream( this.sourcePath );
-      OutputStream outputStream = new FileOutputStream( tempFile.getPath() );
-      
-      Tidy htmlCleaner = new Tidy();
-      if( this.sourcePath != null )
-         htmlCleaner.setInputEncoding( this.sourcePath.getAbsolutePath() );
-      if( this.outputPath != null )
-         htmlCleaner.setOutputEncoding( this.outputPath.getAbsolutePath() );
-      htmlCleaner.setXHTML( true );
-      htmlCleaner.parse( inputStream, outputStream );
-      
-      inputStream.close();
-      outputStream.close();
-   }
-
-   private void cleanUpTempFile() {
-      File tempFile = new File( this.tempFile.getPath() );
-      tempFile.delete();
-   }
-
    private void createPdf() throws MalformedURLException, FileNotFoundException, DocumentException, IOException {
-      String url = new File( tempFile.getPath() ).toURI().toURL().toString();
-      OutputStream outputPDF = new FileOutputStream( this.outputPath );
+      OutputStream outputPDF = new FileOutputStream( this.outputFile );
 
       // Create the renderer and point it to the XHTML document
       ITextRenderer renderer = new ITextRenderer();
-      renderer.setDocument( url );
+      renderer.setDocument( this.sourceFile );
 
       // Render the PDF document
       renderer.layout();

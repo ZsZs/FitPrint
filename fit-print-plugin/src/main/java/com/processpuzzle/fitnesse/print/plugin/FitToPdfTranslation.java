@@ -4,6 +4,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -50,7 +53,7 @@ public class FitToPdfTranslation {
       }catch( DocumentException | IOException | FitToPdfException e ){
          logger.error( "Could not tranlate page: " + currentPage.getFullName() + " to PDF.", e );
       }finally{
-         tearDownTranslation();         
+         tearDownTranslation();
       }
 
       return pdfResourcePathInFitNesse;
@@ -68,7 +71,7 @@ public class FitToPdfTranslation {
       FileWriter fileWriter = null;
 
       try{
-         String pageContent = contentExtractor.extractRealContent( fitNesseClient.retrievePage( currentPage.getFullName() ));
+         String pageContent = contentExtractor.extractRealContent( fitNesseClient.retrievePage( currentPage.getFullName() ) );
          fileWriter = new FileWriter( inputFile.getAbsoluteFile(), true );
          bufferedWriter = new BufferedWriter( fileWriter );
          bufferedWriter.write( pageContent );
@@ -86,7 +89,7 @@ public class FitToPdfTranslation {
             ex.printStackTrace();
          }
       }
-      
+
       logger.debug( "HTML content is saved to file: " + inputFile.getAbsolutePath() );
    }
 
@@ -108,8 +111,15 @@ public class FitToPdfTranslation {
       outputFile.delete();
    }
 
-   private void uploadPdfToFitNesse() {
-      fitNesseClient.uploadFile( outputFile, pdfResourcePathInFitNesse );
+   private void uploadPdfToFitNesse() throws IOException {
+      Path fileToMovePath = Paths.get( outputFile.getCanonicalPath() );
+      Path targetPath = Paths.get( System.getProperty("java.io.tmpdir"));
+      Path targetFile = Files.move( fileToMovePath, targetPath.resolve( currentPage.getName() + ".pdf" ) );
+      
+      this.outputFile.delete();
+      this.outputFile = targetFile.toFile();
+      
+      fitNesseClient.uploadFile( this.outputFile, FIT_TO_PDF_FILES_ROOT );
    }
 
    private boolean verifyPdfExist() {

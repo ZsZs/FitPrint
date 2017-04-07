@@ -21,7 +21,7 @@ import fitnesse.wikitext.parser.Translator;
 
 @Component
 public class FitToPdfSymbol extends SymbolType implements Rule, Translation {
-   private static final String DISPLAY_TEXT_TEMPLATE = "<a href=\"/files/{0}\">View PDF</a>";
+   private static final String DISPLAY_TEXT_TEMPLATE = "<a class=\"FitToPdf\" href=\"/files/{0}\">View PDF</a>";
    private static final String SYMBOL_NAME = "FitToPdf";
    private static final Logger logger = LoggerFactory.getLogger( FitToPdfSymbol.class );
    private String content;
