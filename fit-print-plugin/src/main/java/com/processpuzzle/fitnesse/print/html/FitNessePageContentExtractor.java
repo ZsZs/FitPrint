@@ -3,11 +3,14 @@ package com.processpuzzle.fitnesse.print.html;
 import static com.processpuzzle.fitnesse.print.html.XmlUtil.asList;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -18,45 +21,72 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang.StringUtils;
+import org.htmlcleaner.CleanerProperties;
+import org.htmlcleaner.HtmlCleaner;
+import org.htmlcleaner.PrettyXmlSerializer;
+import org.htmlcleaner.TagNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.tidy.Tidy;
+import org.xml.sax.SAXException;
 
 @Component
 public class FitNessePageContentExtractor {
+   private static final String XSLT_FILE = "classpath:FitToPdf.xsl";
    private static final Logger logger = LoggerFactory.getLogger( FitNessePageContentExtractor.class );
-   private String strippedContent;
    private DocumentBuilderFactory builderFactory;
+   private Document documentDOM;
+   private String correctedHtml;
    private DocumentBuilder domParser;
-   private Document domDocument;
+   @Autowired ResourceLoader resourceLoader;
+   private String sourceHtml;
+   private String strippedContent;
    private XPath xPath;
 
    public String extractRealContent( String sourceHtml ) {
       logger.debug( "Extracting real content for FitNesse Page: " + sourceHtml );
-      parseSourceHtml( sourceHtml );
-      strippedContent();
+      this.sourceHtml = sourceHtml;
+
+      try{
+         correctFailures();
+         parseSourceHtml();
+         strippContentWithXslt();
+         this.strippedContent = cleanUpHtml( this.strippedContent );
+      }catch( IOException | TransformerException | ParserConfigurationException | SAXException e ){
+         logger.error( "Extracting real page content failed.", e );
+      }
+
+      logger.debug( "Stripped content HTML: \n" + strippedContent );
+      System.out.println( "Extracted HTML: \n" );
+      System.out.println( strippedContent );
       return strippedContent;
    }
 
    // protected, private helper mehtods
-   private Document cleanUpHtml( String sourceHtml ) {
-      Tidy tidy = new Tidy();
-      tidy.setMakeClean( true );
-      final Document cleanedHtml = tidy.parseDOM( new ByteArrayInputStream( sourceHtml.getBytes( StandardCharsets.UTF_8 ) ), null );
+   private String cleanUpHtml( String inputHtml ) throws IOException {
+      HtmlCleaner cleaner = new HtmlCleaner();
+      CleanerProperties props = cleaner.getProperties();
+      TagNode node = cleaner.clean( inputHtml );
+      
+      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      new PrettyXmlSerializer(props).writeToStream( node, outputStream );
+      String cleanedHtml = outputStream.toString( StandardCharsets.UTF_8.name() );
       return cleanedHtml;
    }
 
-   private String correctFailures( String sourceHtml ) {
-      String[] searchList = { "<header>", "</header>", "<nav ", "</nav>", "<article>", "</article>", "<footer>", "</footer>", "content=\"IE=edge\">", ".css\">", "<li <" };
-      String[] replacementList = { "<div id='header'>", "</div>", "<div id='nav' ", "</div>", "<div id='article'>", "</div>", "<div id='footer'>", "</div>", "content=\"IE=edge\"/>", ".css\"/>", "<li><" };
-      String correctedHtml = StringUtils.replaceEach( sourceHtml, searchList, replacementList );
+   private String correctFailures() {
+      String[] searchList = { "<header>", "</header>", "<nav ", "</nav>", "<article>", "</article>", "<footer>", "</footer>", "content=\"IE=edge\">", ".css\">",
+            "<li <", "&pageTemplate", "&times" };
+      String[] replacementList = { "<div id='header'>", "</div>", "<div id='nav' ", "</div>", "<div id='article'>", "</div>", "<div id='footer'>", "</div>",
+            "content=\"IE=edge\"/>", ".css\"/>", "<li><", "&amp;pageTemplate", "&amp;times" };
+      correctedHtml = StringUtils.replaceEach( sourceHtml, searchList, replacementList );
       logger.debug( "Corrected HTML: \n" + correctedHtml );
       System.out.println( "Corrected HTML: \n" );
       System.out.println( correctedHtml );
@@ -69,34 +99,24 @@ public class FitNessePageContentExtractor {
       transformer.setOutputProperty( OutputKeys.OMIT_XML_DECLARATION, "yes" );
       transformer.transform( new DOMSource( node ), xmlOutput );
       String extractedHtml = xmlOutput.getWriter().toString();
-      logger.debug( "Extracted HTML: \n" + extractedHtml );
-      System.out.println( "Extracted HTML: \n" );
-      System.out.println( extractedHtml );
       return extractedHtml;
    }
 
-   private void strippedContent(){
+   @SuppressWarnings( "unused" ) private void strippContent() throws XPathExpressionException, TransformerFactoryConfigurationError, TransformerException {
       String expr = "//div[@id='article']";
-      NodeList resultNodeList;
-      try{
-         resultNodeList = (NodeList) xPath.compile( expr ).evaluate( domDocument, XPathConstants.NODESET );
-         for( Node node : asList( resultNodeList ) ){
-            strippedContent = node2String( node );
-         }
-      }catch( XPathExpressionException | TransformerFactoryConfigurationError | TransformerException e ){
-         logger.error( "Stripping content failed.", e );
+      NodeList resultNodeList = (NodeList) xPath.compile( expr ).evaluate( documentDOM, XPathConstants.NODESET );
+      for( Node node : asList( resultNodeList ) ){
+         strippedContent = node2String( node );
       }
    }
-   
-   private void parseSourceHtml( String sourceHtml ){
-      builderFactory = DocumentBuilderFactory.newInstance();
 
-      try{
-         domParser = builderFactory.newDocumentBuilder();
-         domDocument = cleanUpHtml( correctFailures( sourceHtml ) );
-         xPath = XPathFactory.newInstance().newXPath();
-      }catch( Exception e ){
-         logger.error( "Parsing source FitNesse document failed.", e );
-      }
+   private void strippContentWithXslt() throws IOException, TransformerException {
+      strippedContent = XmlTransformer.transform( documentDOM, resourceLoader.getResource( XSLT_FILE ).getInputStream() );
+   }
+
+   private void parseSourceHtml() throws ParserConfigurationException, SAXException, IOException {
+      builderFactory = DocumentBuilderFactory.newInstance();
+      domParser = builderFactory.newDocumentBuilder();
+      documentDOM = domParser.parse( new ByteArrayInputStream( correctedHtml.getBytes( StandardCharsets.UTF_8 ) ) );
    }
 }

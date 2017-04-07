@@ -5,6 +5,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -25,7 +26,6 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +35,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 @RunWith( SpringRunner.class )
 @SpringBootTest( classes = { FitNessePageContentExtractor.class } )
@@ -49,12 +50,12 @@ public class FitNessePageContentExtractorTest {
    private XPath xPath;
    private Document domDocument;
 
-   @Before public void beforeEachTests() throws IOException{
+   @Before public void beforeEachTests() throws IOException {
       sourceHtml = readTestFile();
-      parseResultDocument( contentExtractor.extractRealContent( sourceHtml ));
+      parseResultDocument( contentExtractor.extractRealContent( sourceHtml ) );
    }
 
-   @Ignore @Test public void extractRealContent_stripScripts() {
+   @Test public void extractRealContent_stripScripts() {
       assertThat( searchElement( "//script" ), nullValue() );
    }
 
@@ -63,11 +64,11 @@ public class FitNessePageContentExtractorTest {
       String filePath = resourceLoader.getResource( SAMPLE_FIT_NESSE_PAGE ).getFile().getAbsolutePath();
       Files.lines( Paths.get( filePath ), StandardCharsets.UTF_8 ).forEach( line -> {
          this.fileContent += line;
-      });
+      } );
       return fileContent;
    }
-   
-   private String searchElement( String xPathSelector ){
+
+   private String searchElement( String xPathSelector ) {
       String foundElements = null;
       NodeList resultNodeList;
       try{
@@ -80,14 +81,14 @@ public class FitNessePageContentExtractorTest {
       }
       return foundElements;
    }
-   
-   private void parseResultDocument( String resultHtml ){
+
+   private void parseResultDocument( String resultHtml ) {
       builderFactory = DocumentBuilderFactory.newInstance();
       domParser = null;
 
       try{
          domParser = builderFactory.newDocumentBuilder();
-         domDocument = domParser.parse( resultHtml );
+         domDocument = domParser.parse( new InputSource( new StringReader( resultHtml ) ) );
          xPath = XPathFactory.newInstance().newXPath();
       }catch( Exception e ){
          e.printStackTrace();

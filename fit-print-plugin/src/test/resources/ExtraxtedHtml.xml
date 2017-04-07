@@ -1,6 +1,5 @@
 <html>
-<head>
-<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<head><meta http-equiv="Content-Type" content="text/html">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>FitPrint</title>
@@ -11,8 +10,14 @@
 <link rel="stylesheet" type="text/css" href="/files/fitnesse/wysiwyg/wysiwyg.css" media="screen">
 <link rel="stylesheet" type="text/css" href="/files/fitnesse/bootstrap/css/fitnesse-bootstrap.css">
 <link rel="stylesheet" type="text/css" href="/files/fitnesse/question.mark/question.mark.css">
+
+
+
+
+
 </head>
 <body class="wikiPage">
+  
   <div id="header"></div>
   <div id="article">
     <h1>
@@ -21,7 +26,17 @@
     <h4>
       <center>Dokumentation and Acceptance Tests</center>
     </h4>
-    <br> <a href="/files/FitToPdf/FitPrint.pdf">View PDF</a> <br> <br> <br>
+    <br>
+    <a href="/files/FitToPdf/FitPrint.pdf">View PDF</a><br>
+    <br>
+    <br>
+    
+    
+    
+    
+    
+    
   </div>
+  
 </body>
 </html>
