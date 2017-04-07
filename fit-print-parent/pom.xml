@@ -9,7 +9,7 @@
     
   <groupId>com.processpuzzle.fitnesse</groupId>
   <artifactId>fit-print-parent</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
   <name>FitPrint - Parent</name>
   <description>Maven parent pom of FitPrint FitNesse plugin.</description>
   <packaging>pom</packaging>
