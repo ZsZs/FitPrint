@@ -7,9 +7,6 @@ install: true
 env:
 - local.maven.repository=$HOME/.m2
 
-services:
-  - docker
-
 addons:
   sonarqube:
     organization: "processpuzzle"
@@ -21,6 +18,13 @@ cache:
   - $HOME/.m2
   - $HOME/.sonar/cache
   
+deploy:
+  - provider: script
+    skip_cleanup: true
+    script: mvn deploy -Dmaven.test.skip=true --settings travis-maven-settings.xml -Dsettings.security=travis-maven-settings-security.xml -B
+    on:
+      branch: development
+ 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 
