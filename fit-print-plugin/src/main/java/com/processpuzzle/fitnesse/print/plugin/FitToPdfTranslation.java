@@ -46,7 +46,8 @@ public class FitToPdfTranslation {
       try{
          setUpTranslation();
          if( !verifyPdfExist() ){
-            compileSourceHtml();
+            String sourceHtml = compileSourceHtml( this.currentPage );
+            saveSourceHtml( sourceHtml );
             renderHtmlToPdf();
             uploadPdfToFitNesse();
          }
@@ -66,12 +67,28 @@ public class FitToPdfTranslation {
    // @formatter:on
 
    // protected, private helper methods
-   private void compileSourceHtml() throws FitToPdfException {
+   private String compileSourceHtml( SourcePage page ) {
+      String pageContent = contentExtractor.extractRealContent( fitNesseClient.retrievePage( page.getFullName() ) );
+      
+      Boolean printChildPages = Boolean.parseBoolean( this.fitToPdfProperties.getProperty( FitToPdfProperties.PRINT_CHILD_PAGES.getPropertyName() ) );
+      if( printChildPages != null && printChildPages ){
+         for( SourcePage childPage : page.getChildren() ){
+            pageContent += this.compileSourceHtml( childPage );
+         }
+      }
+
+      return pageContent;
+   }
+
+   private void renderHtmlToPdf() throws DocumentException, IOException {
+      this.pdfRenderer.render( inputFile, outputFile );
+   }
+   
+   private void saveSourceHtml( String pageContent ) throws FitToPdfException{
       BufferedWriter bufferedWriter = null;
       FileWriter fileWriter = null;
 
       try{
-         String pageContent = contentExtractor.extractRealContent( fitNesseClient.retrievePage( currentPage.getFullName() ) );
          fileWriter = new FileWriter( inputFile.getAbsoluteFile(), true );
          bufferedWriter = new BufferedWriter( fileWriter );
          bufferedWriter.write( pageContent );
@@ -89,12 +106,8 @@ public class FitToPdfTranslation {
             ex.printStackTrace();
          }
       }
-
+      
       logger.debug( "HTML content is saved to file: " + inputFile.getAbsolutePath() );
-   }
-
-   private void renderHtmlToPdf() throws DocumentException, IOException {
-      this.pdfRenderer.render( inputFile, outputFile );
    }
 
    private void setUpTranslation() throws IOException {

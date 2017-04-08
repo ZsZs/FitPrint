@@ -40,6 +40,7 @@ public class FitToPdfTranslationTest {
    @Autowired private FitToPdfTranslation translation;
 
    @Before public void beforeEachTests() {
+      when( properties.getProperty( FitToPdfProperties.PRINT_CHILD_PAGES.getPropertyName() )).thenReturn( "false" );
       when( currentPage.getName() ).thenReturn( CURRENT_PAGE );
       when( currentPage.getFullName() ).thenReturn( CURRENT_PAGE );
       when( fitNesseClient.verifyFileExist( anyString() )).thenReturn( false );

@@ -6,9 +6,17 @@
          <xsl:apply-templates select="node()|@*"/>
       </xsl:copy>
     </xsl:template>
-	<xsl:template match="script"/>    
+
+	<xsl:template match="/">
+	  <xsl:apply-templates select="html/body/div[@id='article']"/>
+	</xsl:template>
+
+	<xsl:template match="script"/>
+	<xsl:template match="meta"/>    
+	<xsl:template match="link"/>    
 	<xsl:template match="div[@id='nav']"/>
 	<xsl:template match="div[@id='helpUnderlay']"/>    
+	<xsl:template match="div[@id='header']"/>    
 	<xsl:template match="div[@id='footer']"/>    
 	<xsl:template match="div[@class='collapsible closed']"/>
   <xsl:template match="a[@class='FitToPdf']"/>

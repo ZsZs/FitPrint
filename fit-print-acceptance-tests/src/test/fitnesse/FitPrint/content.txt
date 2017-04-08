@@ -8,7 +8,7 @@ This page has child pages, which has to be printed as well:
 
 !startFitToPdf
 printChildPages = true
-printRootPage = false
+printRootPage = true
 !endFitToPdf
 
 !*> '''Variables Defined'''
