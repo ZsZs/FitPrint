@@ -65,7 +65,7 @@
   <scm>
     <url>https://github.com/ZsZs/FitPrint</url>
     <connection>scm:git:git://github.com/ZsZs/FitPrint.git</connection>
-    <developerConnection>scm:git:ssh//git@github.com/ZsZs/FitPrint.git</developerConnection>
+    <developerConnection>scm:git:git@github.com:ZsZs/FitPrint.git</developerConnection>
     <tag>fit-print-1.0.0</tag>
   </scm>
 
