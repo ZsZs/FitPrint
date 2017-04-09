@@ -19,8 +19,10 @@ import org.xhtmlrenderer.protocols.data.Handler;
 import com.lowagie.text.DocumentException;
 
 class DataURLStreamHandlerFactory implements URLStreamHandlerFactory {
+   private static final String PROTOCOL_DATA = "data";
+
    public URLStreamHandler createURLStreamHandler( String protocol ) {
-      if( protocol.equalsIgnoreCase( "data" ) )
+      if( protocol.equalsIgnoreCase( PROTOCOL_DATA ) )
          return new Handler();
       else
          return null;
@@ -34,10 +36,9 @@ public class PDFRenderer {
    private File sourceFile;
 
    // constructors
-   public PDFRenderer() {}
-
+   
    // public accessors and mutators
-   public void render( File sourceFile, File outputFile ) throws DocumentException, IOException {
+   public void render( File sourceFile, File outputFile ) {
       this.sourceFile = sourceFile;
       this.outputFile = outputFile;
 
@@ -55,26 +56,38 @@ public class PDFRenderer {
    // @formatter:on
 
    // protected, private helper methods
-   private void createPdf() throws MalformedURLException, FileNotFoundException, DocumentException, IOException {
-      OutputStream outputPDF = new FileOutputStream( this.outputFile );
+   private void createPdf() throws PdfCreationException {
+      OutputStream outputPDF = null;
+      
+      try{
+         outputPDF = new FileOutputStream( this.outputFile );
+         
+         // Create the renderer and point it to the XHTML document
+         ITextRenderer renderer = new ITextRenderer();
+         renderer.setDocument( this.sourceFile );
 
-      // Create the renderer and point it to the XHTML document
-      ITextRenderer renderer = new ITextRenderer();
-      renderer.setDocument( this.sourceFile );
-
-      // Render the PDF document
-      renderer.layout();
-      renderer.createPDF( outputPDF );
-
-      // Close the streams (and don't cross them!)
-      outputPDF.close();
+         // Render the PDF document
+         renderer.layout();
+         renderer.createPDF( outputPDF );         
+      }catch( Exception e ){
+         logger.error( "Couldn't create the PDF: " + this.outputFile.getPath() + " from HTML" + sourceFile.getPath(), e );
+         throw new PdfCreationException( sourceFile.getPath(), outputFile.getPath(), e );
+      }finally {
+         // Close the streams (and don't cross them!)
+         try{
+            outputPDF.close();
+         }catch( IOException e ){
+            logger.error( "Couldn't close the output stream.", e );
+            throw new PdfCreationException( sourceFile.getPath(), outputFile.getPath(), e );
+         }         
+      }
    }
 
    private void setURLStreamHandlerFactory() {
       try{
          URL.setURLStreamHandlerFactory( new DataURLStreamHandlerFactory() );
       }catch( Error e ){
-         System.out.println( "The Stream Handler Factory is already defined. Moving on to convert to PDF." );
+         logger.info( "The Stream Handler Factory is already defined. Moving on to convert to PDF." );
       }
    }
 }
