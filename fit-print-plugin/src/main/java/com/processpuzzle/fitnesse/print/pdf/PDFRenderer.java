@@ -1,11 +1,9 @@
 package com.processpuzzle.fitnesse.print.pdf;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
@@ -15,8 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 import org.xhtmlrenderer.protocols.data.Handler;
-
-import com.lowagie.text.DocumentException;
 
 class DataURLStreamHandlerFactory implements URLStreamHandlerFactory {
    private static final String PROTOCOL_DATA = "data";
