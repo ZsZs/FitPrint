@@ -9,7 +9,7 @@
 
   <groupId>com.processpuzzle.fitnesse</groupId>
   <artifactId>fit-print-parent</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0</version>
   <name>FitPrint - Parent</name>
   <description>Maven parent pom of FitPrint FitNesse plugin.</description>
   <packaging>pom</packaging>
@@ -66,7 +66,7 @@
     <url>https://github.com/ZsZs/FitPrint</url>
     <connection>scm:git:git://github.com/ZsZs/FitPrint.git</connection>
     <developerConnection>scm:git:ssh//git@github.com/ZsZs/FitPrint.git</developerConnection>
-    <tag>${project.version}</tag>
+    <tag>fit-print-1.0.0</tag>
   </scm>
 
   <issueManagement>
