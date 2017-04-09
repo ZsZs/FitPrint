@@ -21,7 +21,7 @@ cache:
   - $HOME/.sonar/cache
 
 script:
-  - mvn clean install sonar:sonar
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
   
 deploy:
   - provider: script
