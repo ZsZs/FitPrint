@@ -47,6 +47,7 @@ public class FitToPdfTranslation {
          setUpTranslation();
          if( !verifyPdfExist() ){
             String sourceHtml = compileSourceHtml( this.currentPage );
+            sourceHtml = contentExtractor.cleanUpHtml( sourceHtml );
             saveSourceHtml( sourceHtml );
             renderHtmlToPdf();
             uploadPdfToFitNesse();
@@ -73,7 +74,9 @@ public class FitToPdfTranslation {
       Boolean printChildPages = Boolean.parseBoolean( this.fitToPdfProperties.getProperty( FitToPdfProperties.PRINT_CHILD_PAGES.getPropertyName() ) );
       if( printChildPages != null && printChildPages ){
          for( SourcePage childPage : page.getChildren() ){
-            pageContent += this.compileSourceHtml( childPage );
+            if( !childPage.getName().equals( "RecentChanges" )){
+               pageContent += this.compileSourceHtml( childPage );
+            }
          }
       }
 

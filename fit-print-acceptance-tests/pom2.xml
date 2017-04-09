@@ -1,0 +1,63 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.processpuzzle.fitnesse</groupId>
+    <artifactId>fit-print-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../fit-print-parent</relativePath>
+  </parent>
+  <artifactId>fit-print-tests</artifactId>
+  <name>FitPrint - Tests</name>
+  <description>Integrated acceptance tests of FitPrint plugin.</description>
+
+  <dependencies>
+    <!-- Modul dependencies -->
+    <dependency>
+      <groupId>com.processpuzzle.fitnesse</groupId>
+      <artifactId>fit-print-plugin</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>start-fitnesse</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target name="start-fitnesse">
+                <exec executable="cmd" dir="${project.build.directory}/../../fit-print-acceptance-tests" spawn="true">
+                  <arg value="mvn verify -Pwiki" />
+                </exec>
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>stop-fitnesse</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target name="stop-fitnesse">
+                <exec executable="curl" dir="${project.build.directory}" spawn="false">
+                  <arg value="-X" />
+                  <arg value="GET" />
+                  <arg value="http://localhost:9123?shutdown" />
+                </exec>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

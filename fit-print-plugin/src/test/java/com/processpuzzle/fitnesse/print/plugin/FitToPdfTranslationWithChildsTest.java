@@ -6,6 +6,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.util.Properties;
 
 import org.assertj.core.util.Lists;
@@ -33,6 +34,8 @@ public class FitToPdfTranslationWithChildsTest {
    private static final String CHILD_PAGE_TWO_SOURCE = "<div>child two</div>";
    private static final String ROOT_PAGE = "CurrentPage";
    private static final String ROOT_PAGE_SOURCE = "<div>root page</div>";
+   private static final String COMPILED_SOURCE_RAW = ROOT_PAGE_SOURCE + CHILD_PAGE_ONE_SOURCE + CHILD_PAGE_TWO_SOURCE;
+   private static final String FORMATTED_SOURCE = "<!DOCTYPE html><html><head/><body>" + COMPILED_SOURCE_RAW + "</body></html>";
    @Mock private SourcePage childPageOne;
    @Mock private SourcePage childPageTwo;
    @Mock private SourcePage currentPage;
@@ -42,7 +45,7 @@ public class FitToPdfTranslationWithChildsTest {
    @Mock private Properties properties;
    @Autowired private FitToPdfTranslation translation;
 
-   @Before public void beforeEachTests() {
+   @Before public void beforeEachTests() throws IOException {
       when( properties.getProperty( FitToPdfProperties.PRINT_CHILD_PAGES.getPropertyName() )).thenReturn( "true" );
       when( currentPage.getName() ).thenReturn( ROOT_PAGE );
       when( currentPage.getFullName() ).thenReturn( ROOT_PAGE );
@@ -58,12 +61,14 @@ public class FitToPdfTranslationWithChildsTest {
       when( contentExtractor.extractRealContent( ROOT_PAGE_SOURCE )).thenReturn( ROOT_PAGE_SOURCE );
       when( contentExtractor.extractRealContent( CHILD_PAGE_ONE_SOURCE )).thenReturn( CHILD_PAGE_ONE_SOURCE );
       when( contentExtractor.extractRealContent( CHILD_PAGE_TWO_SOURCE )).thenReturn( CHILD_PAGE_TWO_SOURCE );
+      when( contentExtractor.cleanUpHtml( COMPILED_SOURCE_RAW )).thenReturn( FORMATTED_SOURCE );
       
       this.translation.translate( currentPage, properties );
    }
 
-   @Test public void translate_whenChildPages_weawesContent(){
+   @Test public void translate_whenChildPages_weawesContent() throws IOException{
       verify( contentExtractor, times( 3 )).extractRealContent( any() );
+      verify( contentExtractor, times( 1 )).cleanUpHtml( any() );
       verify( fitNesseClient, times( 1 )).retrievePage( ROOT_PAGE );
       verify( fitNesseClient, times( 1 )).retrievePage( CHILD_PAGE_ONE );
       verify( fitNesseClient, times( 1 )).retrievePage( CHILD_PAGE_TWO );

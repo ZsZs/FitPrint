@@ -31,6 +31,8 @@ import fitnesse.wikitext.parser.SourcePage;
 public class FitToPdfTranslationTest {
    private static final String CURRENT_PAGE = "CurrentPage";
    private static final String PAGE_SOURCE = "<div>something</div>";
+   private static final String COMPILED_SOURCE_RAW = PAGE_SOURCE;
+   private static final String FORMATTED_SOURCE = "<!DOCTYPE html><html><head/><body>" + COMPILED_SOURCE_RAW + "</body></html>";
    @Mock private SourcePage currentPage;
    @MockBean private FitNesseClient fitNesseClient;
    @MockBean private FitNessePageContentExtractor contentExtractor;
@@ -39,13 +41,14 @@ public class FitToPdfTranslationTest {
    @Mock private Properties properties;
    @Autowired private FitToPdfTranslation translation;
 
-   @Before public void beforeEachTests() {
+   @Before public void beforeEachTests() throws IOException {
       when( properties.getProperty( FitToPdfProperties.PRINT_CHILD_PAGES.getPropertyName() )).thenReturn( "false" );
       when( currentPage.getName() ).thenReturn( CURRENT_PAGE );
       when( currentPage.getFullName() ).thenReturn( CURRENT_PAGE );
       when( fitNesseClient.verifyFileExist( anyString() )).thenReturn( false );
       when( fitNesseClient.retrievePage( CURRENT_PAGE )).thenReturn( PAGE_SOURCE );
       when( contentExtractor.extractRealContent( PAGE_SOURCE )).thenReturn( PAGE_SOURCE );
+      when( contentExtractor.cleanUpHtml( COMPILED_SOURCE_RAW )).thenReturn( FORMATTED_SOURCE );
       
       outputFilePath = this.translation.translate( currentPage, properties );
    }

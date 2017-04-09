@@ -140,12 +140,6 @@
         <groupId>com.versioneye</groupId>
         <artifactId>versioneye-maven-plugin</artifactId>
       </plugin>
-      <!-- <plugin> <groupId>com.processpuzzle.fitnesse</groupId> <artifactId>fitnesse-launcher-maven-plugin</artifactId> <executions> <execution> <id>start-fitnesse</id> <phase>pre-integration-test</phase> 
-        <goals> <goal>set-up</goal> <goal>server</goal> </goals> <configuration> <maxErrorsToConsole>20</maxErrorsToConsole> <launches> <launch> <suite>FitPrint</suite> </launch> </launches> <useProjectDependencies> 
-        <scope>test</scope> <scope>runtime</scope> </useProjectDependencies> </configuration> </execution> </executions> <dependencies> <dependency> <groupId>com.processpuzzle.fitnesse</groupId> <artifactId>fit-print-plugin</artifactId> 
-        <version>${project.version}</version> </dependency> </dependencies> </plugin> <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-antrun-plugin</artifactId> <executions> <execution> 
-        <id>stop-fitnesse</id> <phase>post-integration-test</phase> <goals> <goal>run</goal> </goals> <configuration> <target name="stop-fitnesse"> <exec executable="curl" dir="${project.build.directory}" spawn="false"> 
-        <arg value="-X" /> <arg value="POST" /> <arg value="http://localhost:9123?shutdown" /> </exec> </target> </configuration> </execution> </executions> </plugin> -->
     </plugins>
   </build>
 

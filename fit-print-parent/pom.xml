@@ -6,14 +6,14 @@
     <artifactId>spring-boot-starter-parent</artifactId>
     <version>1.5.2.RELEASE</version>
   </parent>
-    
+
   <groupId>com.processpuzzle.fitnesse</groupId>
   <artifactId>fit-print-parent</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <name>FitPrint - Parent</name>
   <description>Maven parent pom of FitPrint FitNesse plugin.</description>
   <packaging>pom</packaging>
-  
+
   <properties>
     <commons.lang3.version>3.5</commons.lang3.version>
 
@@ -158,6 +158,7 @@
               </goals>
               <configuration>
                 <destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
+                <propertyName>surefireArgLine</propertyName>
               </configuration>
             </execution>
 
@@ -169,6 +170,7 @@
               <configuration>
                 <propertyName>argLine</propertyName>
                 <destFile>${project.build.directory}/coverage-reports/jacoco-it.exec</destFile>
+                <propertyName>testArgLine</propertyName>
               </configuration>
             </execution>
 
@@ -193,7 +195,37 @@
                 <outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
               </configuration>
             </execution>
-            <!-- <execution> <id>check</id> <goals> <goal>check</goal> </goals> </execution> -->
+
+            <execution>
+              <id>merge-results</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>merge</goal>
+              </goals>
+              <configuration>
+                <fileSets>
+                  <fileSet>
+                    <directory>${project.build.directory}/coverage-reports</directory>
+                    <includes>
+                      <include>*.exec</include>
+                    </includes>
+                  </fileSet>
+                </fileSets>
+                <destFile>${project.build.directory}/coverage-reports/aggregate.exec</destFile>
+              </configuration>
+            </execution>
+            
+            <execution>
+              <id>post-merge-report</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>report</goal>
+              </goals>
+              <configuration>
+                <dataFile>${project.build.directory}/coverage-reports/aggregate.exec</dataFile>
+                <outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate</outputDirectory>
+              </configuration>
+            </execution>
           </executions>
         </plugin>
 
@@ -305,5 +337,5 @@
     </site>
 
   </distributionManagement>
-  
+
 </project>

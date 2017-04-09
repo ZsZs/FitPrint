@@ -50,26 +50,8 @@ public class FitNessePageContentExtractor {
    private String strippedContent;
    private XPath xPath;
 
-   public String extractRealContent( String sourceHtml ) {
-      logger.debug( "Extracting real content for FitNesse Page: " + sourceHtml );
-      this.sourceHtml = sourceHtml;
-
-      try{
-         correctFailures();
-         parseSourceHtml();
-         strippContentWithXslt();
-         this.strippedContent = cleanUpHtml( this.strippedContent );
-      }catch( IOException | TransformerException | ParserConfigurationException | SAXException e ){
-         logger.error( "Extracting real page content failed.", e );
-      }
-
-      logger.debug( "Stripped content HTML: \n" + strippedContent );
-
-      return strippedContent;
-   }
-
-   // protected, private helper mehtods
-   private String cleanUpHtml( String inputHtml ) throws IOException {
+   // public accessors and mutators
+   public String cleanUpHtml( String inputHtml ) throws IOException {
       HtmlCleaner cleaner = new HtmlCleaner();
       CleanerProperties props = cleaner.getProperties();
       TagNode node = cleaner.clean( inputHtml );
@@ -80,6 +62,24 @@ public class FitNessePageContentExtractor {
       return cleanedHtml;
    }
 
+   public String extractRealContent( String sourceHtml ) {
+      logger.debug( "Extracting real content for FitNesse Page: " + sourceHtml );
+      this.sourceHtml = sourceHtml;
+
+      try{
+         correctFailures();
+         parseSourceHtml();
+         strippContentWithXslt();
+      }catch( IOException | TransformerException | ParserConfigurationException | SAXException e ){
+         logger.error( "Extracting real page content failed.", e );
+      }
+
+      logger.debug( "Stripped content HTML: \n" + strippedContent );
+
+      return strippedContent;
+   }
+
+   // protected, private helper mehtods
    private String correctFailures() {
       String[] searchList = { "<header>", "</header>", "<nav ", "</nav>", "<article>", "</article>", "<footer>", "</footer>", "content=\"IE=edge\">", ".css\">",
             "<li <", "&pageTemplate", "&times" };
