@@ -142,8 +142,23 @@
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-scm-plugin</artifactId>
+          <version>1.9.5</version>
+          <configuration>
+            <connectionType>developerConnection</connectionType>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
           <version>2.5.3</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-scm-plugin</artifactId>
+            </dependency>
+          </dependencies>
         </plugin>
 
         <plugin>
@@ -195,38 +210,10 @@
                 <outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
               </configuration>
             </execution>
-<!-- 
-            <execution>
-              <id>merge-results</id>
-              <phase>verify</phase>
-              <goals>
-                <goal>merge</goal>
-              </goals>
-              <configuration>
-                <fileSets>
-                  <fileSet>
-                    <directory>${project.build.directory}/coverage-reports</directory>
-                    <includes>
-                      <include>*.exec</include>
-                    </includes>
-                  </fileSet>
-                </fileSets>
-                <destFile>${project.build.directory}/coverage-reports/aggregate.exec</destFile>
-              </configuration>
-            </execution>
-            
-            <execution>
-              <id>post-merge-report</id>
-              <phase>verify</phase>
-              <goals>
-                <goal>report</goal>
-              </goals>
-              <configuration>
-                <dataFile>${project.build.directory}/coverage-reports/aggregate.exec</dataFile>
-                <outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate</outputDirectory>
-              </configuration>
-            </execution>
- -->
+            <!-- <execution> <id>merge-results</id> <phase>verify</phase> <goals> <goal>merge</goal> </goals> <configuration> <fileSets> <fileSet> <directory>${project.build.directory}/coverage-reports</directory> 
+              <includes> <include>*.exec</include> </includes> </fileSet> </fileSets> <destFile>${project.build.directory}/coverage-reports/aggregate.exec</destFile> </configuration> </execution> <execution> <id>post-merge-report</id> 
+              <phase>verify</phase> <goals> <goal>report</goal> </goals> <configuration> <dataFile>${project.build.directory}/coverage-reports/aggregate.exec</dataFile> <outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate</outputDirectory> 
+              </configuration> </execution> -->
           </executions>
         </plugin>
 
