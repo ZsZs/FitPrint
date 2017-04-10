@@ -19,7 +19,7 @@
 
     <fitnesse.host>localhost</fitnesse.host>
     <fitnesse.port>9123</fitnesse.port>
-    <fitnesse.maven.plugin.version>1.6.5-SNAPSHOT</fitnesse.maven.plugin.version>
+    <fitnesse.maven.plugin.version>1.6.5</fitnesse.maven.plugin.version>
     <fitnesse.version>20151230</fitnesse.version>
     <guava.version>21.0</guava.version>
     <java.version>1.8</java.version>
