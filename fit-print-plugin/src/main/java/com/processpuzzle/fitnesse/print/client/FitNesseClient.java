@@ -5,7 +5,6 @@ import java.net.URLConnection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
@@ -13,6 +12,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -25,7 +26,7 @@ public class FitNesseClient {
    private static final String DEFAULT_HOST = "http://localhost:9123";
    private static final Logger logger = LoggerFactory.getLogger( FitNesseClient.class );
    private String hostUrl;
-   @Autowired private RestTemplate restTemplate;
+   private RestTemplate restTemplate;
 
    // constructors
    public FitNesseClient() {
@@ -34,6 +35,7 @@ public class FitNesseClient {
 
    public FitNesseClient( String hostUrl ) {
       this.hostUrl = hostUrl;
+      this.restTemplate = restTemplate();
    }
 
    // public accessors and mutators
@@ -64,10 +66,10 @@ public class FitNesseClient {
       MultiValueMap<String, Object> parts = new LinkedMultiValueMap<String, Object>();
       parts.add( "Content-Type", URLConnection.guessContentTypeFromName( sourceFile.getName() ) );
       parts.add( "file", new FileSystemResource( sourceFile.getAbsolutePath() ) );
-      
+
       HttpHeaders headers = new HttpHeaders();
       headers.setContentType( MediaType.MULTIPART_FORM_DATA );
-      
+
       HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>( parts, headers );
 
       try{
@@ -91,7 +93,7 @@ public class FitNesseClient {
 
    // properties
    // @formatter:off
-   @Bean public RestTemplate restTemplate() { return new RestTemplate(); }
+   @Bean public RestTemplate restTemplate() { return new RestTemplate( getClientHttpRequestFactory() ); }
    public void setHostUrl( String hostUrl ){ this.hostUrl = hostUrl; }
    // @formatter:on
 
@@ -100,5 +102,12 @@ public class FitNesseClient {
       if( !verifyFileExist( directoryName ) ){
          createDirectory( directoryName );
       }
+   }
+
+   private ClientHttpRequestFactory getClientHttpRequestFactory() {
+      int timeout = 5000;
+      HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+      clientHttpRequestFactory.setConnectTimeout( timeout );
+      return clientHttpRequestFactory;
    }
 }

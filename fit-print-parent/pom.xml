@@ -9,7 +9,7 @@
 
   <groupId>com.processpuzzle.fitnesse</groupId>
   <artifactId>fit-print-parent</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <name>FitPrint - Parent</name>
   <description>Maven parent pom of FitPrint FitNesse plugin.</description>
   <packaging>pom</packaging>
@@ -19,7 +19,7 @@
 
     <fitnesse.host>localhost</fitnesse.host>
     <fitnesse.port>9123</fitnesse.port>
-    <fitnesse.maven.plugin.version>1.6.4-RELEASE</fitnesse.maven.plugin.version>
+    <fitnesse.maven.plugin.version>1.6.5-SNAPSHOT</fitnesse.maven.plugin.version>
     <fitnesse.version>20151230</fitnesse.version>
     <guava.version>21.0</guava.version>
     <java.version>1.8</java.version>
@@ -195,7 +195,7 @@
                 <outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
               </configuration>
             </execution>
-
+<!-- 
             <execution>
               <id>merge-results</id>
               <phase>verify</phase>
@@ -226,6 +226,7 @@
                 <outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate</outputDirectory>
               </configuration>
             </execution>
+ -->
           </executions>
         </plugin>
 
