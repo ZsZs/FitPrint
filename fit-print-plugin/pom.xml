@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.processpuzzle.fitnesse</groupId>
     <artifactId>fit-print-parent</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <relativePath>../fit-print-parent</relativePath>
   </parent>
 
