@@ -176,7 +176,6 @@
           <dependency>
             <groupId>com.processpuzzle.fitnesse</groupId>
             <artifactId>fit-print-plugin</artifactId>
-            <version>${project.version}</version>
           </dependency>
         </dependencies>
         <executions>
