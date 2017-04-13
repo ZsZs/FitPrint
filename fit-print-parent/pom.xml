@@ -87,7 +87,13 @@
         <artifactId>fit-print-acceptance-tests</artifactId>
         <version>${project.version}</version>
       </dependency>
-      
+  
+      <dependency>
+        <groupId>org.fitnesse</groupId>
+        <artifactId>fitnesse</artifactId>
+        <version>${fitnesse.version}</version>
+      </dependency>
+    
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
