@@ -3,7 +3,7 @@
   <parent>
     <groupId>com.processpuzzle.fitnesse</groupId>
     <artifactId>fit-print-parent</artifactId>
-    <version>1.0.1</version>
+    <version>1.1.0-SNAPSHOT</version>
     <relativePath>../fit-print-parent</relativePath>
   </parent>
   <artifactId>fit-print-acceptance-tests</artifactId>
@@ -126,6 +126,20 @@
           <plugin>
             <groupId>com.processpuzzle.fitnesse</groupId>
             <artifactId>fitnesse-launcher-maven-plugin</artifactId>
+            <dependencies>
+              <dependency>
+                <groupId>net.sourceforge.plantuml</groupId>
+                <artifactId>plantuml</artifactId>
+                <version>${plantuml.version}</version>
+              </dependency>
+
+              <dependency>
+                <groupId>com.processpuzzle.fitnesse</groupId>
+                <artifactId>fitnesse-plantuml-plugin</artifactId>
+                <version>${fitnesse.plantuml.plugin.version}</version>
+              </dependency>
+            </dependencies>
+
             <executions>
               <execution>
                 <goals>

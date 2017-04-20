@@ -5,6 +5,7 @@ import java.net.URLConnection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
@@ -23,18 +24,13 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class FitNesseClient {
    private static final String FILES_PATH = "/files";
-   private static final String DEFAULT_HOST = "http://localhost:9123";
    private static final Logger logger = LoggerFactory.getLogger( FitNesseClient.class );
    private String hostUrl;
    private RestTemplate restTemplate;
 
    // constructors
-   public FitNesseClient() {
-      this( DEFAULT_HOST );
-   }
-
-   public FitNesseClient( String hostUrl ) {
-      this.hostUrl = hostUrl;
+   @Autowired public FitNesseClient( FitNesseClientProperties properties ) {
+      this.hostUrl = properties.hostUrl();
       this.restTemplate = restTemplate();
    }
 
@@ -93,6 +89,7 @@ public class FitNesseClient {
 
    // properties
    // @formatter:off
+   public String getHostUrl() { return this.hostUrl; }
    @Bean public RestTemplate restTemplate() { return new RestTemplate( getClientHttpRequestFactory() ); }
    public void setHostUrl( String hostUrl ){ this.hostUrl = hostUrl; }
    // @formatter:on

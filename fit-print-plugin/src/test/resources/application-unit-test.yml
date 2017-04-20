@@ -1,0 +1,5 @@
+fitnesse:
+  host: ide.c9.io
+  path: zsuffa/fit-print
+  port: 8090
+  protocol: https

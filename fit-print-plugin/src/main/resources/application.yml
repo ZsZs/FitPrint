@@ -4,4 +4,8 @@ logging:
     org.springframework: INFO
     org.springframework.beans: INFO
     org.springframework.security: INFO
-    com.processpuzzle.fitnesse.print: INFO
+    com.processpuzzle.fitnesse.print: DEBUG
+
+fitnesse:
+  host: http://localhost
+  port: 8080

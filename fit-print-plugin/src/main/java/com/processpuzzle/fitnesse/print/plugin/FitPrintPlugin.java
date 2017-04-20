@@ -1,5 +1,7 @@
 package com.processpuzzle.fitnesse.print.plugin;
 
+import com.processpuzzle.fitnesse.print.client.FitNesseClientProperties;
+
 import javax.annotation.PreDestroy;
 
 import org.slf4j.Logger;
@@ -17,7 +19,7 @@ import fitnesse.wikitext.parser.SymbolProvider;
 
 @SpringBootApplication
 @ComponentScan( basePackages = {"com.processpuzzle.fitnesse.print.client", "com.processpuzzle.fitnesse.print.html", "com.processpuzzle.fitnesse.print.file", "com.processpuzzle.fitnesse.print.pdf", "com.processpuzzle.fitnesse.print.plugin" })
-@EnableConfigurationProperties
+@EnableConfigurationProperties( FitNesseClientProperties.class )
 public class FitPrintPlugin extends PluginFeatureFactoryBase {
    private static final Logger logger = LoggerFactory.getLogger( FitPrintPlugin.class );
    private static ApplicationContext applicationContext;

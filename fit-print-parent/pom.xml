@@ -9,7 +9,7 @@
 
   <groupId>com.processpuzzle.fitnesse</groupId>
   <artifactId>fit-print-parent</artifactId>
-  <version>1.0.1</version>
+  <version>1.1.0-SNAPSHOT</version>
   <name>FitPrint - Parent</name>
   <description>Maven parent pom of FitPrint FitNesse plugin.</description>
   <packaging>pom</packaging>
@@ -20,6 +20,7 @@
     <fitnesse.host>localhost</fitnesse.host>
     <fitnesse.port>9123</fitnesse.port>
     <fitnesse.maven.plugin.version>1.6.5</fitnesse.maven.plugin.version>
+    <fitnesse.plantuml.plugin.version>1.0.2</fitnesse.plantuml.plugin.version>
     <fitnesse.version>20151230</fitnesse.version>
     <guava.version>21.0</guava.version>
     <java.version>1.8</java.version>
@@ -29,6 +30,7 @@
     <maven.plugin.source.version>3.0.1</maven.plugin.source.version>
     <node.version>v7.2.1</node.version>
     <npm.version>4.1.2</npm.version>
+    <plantuml.version>8059</plantuml.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <skip.integration.test>false</skip.integration.test>
@@ -128,6 +130,18 @@
         <groupId>org.apache.pdfbox</groupId>
         <artifactId>pdfbox</artifactId>
         <version>2.0.5</version>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sourceforge.plantuml</groupId>
+        <artifactId>plantuml</artifactId>
+        <version>${plantuml.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.github.sbellus</groupId>
+        <artifactId>fitnesse-plantuml-plugin</artifactId>
+        <version>${fitnesse.plantuml.plugin.version}</version>
       </dependency>
 
     </dependencies>
