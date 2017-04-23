@@ -16,7 +16,6 @@ import org.xhtmlrenderer.simple.extend.FormSubmissionListener;
 public class SVGReplacedElementFactory implements ReplacedElementFactory {
    @Override public ReplacedElement createReplacedElement( LayoutContext c, BlockBox box, UserAgentCallback uac, int cssWidth, int cssHeight ) {
       Element element = box.getElement();
-      System.out.println( element.getNodeName() );
       if( "svg".equals( element.getNodeName() ) ){
 
          DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
