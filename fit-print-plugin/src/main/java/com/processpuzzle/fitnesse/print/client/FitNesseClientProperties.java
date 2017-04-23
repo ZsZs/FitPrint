@@ -1,16 +1,16 @@
 package com.processpuzzle.fitnesse.print.client;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URI;
 import java.net.URISyntaxException;
+
 import org.apache.http.client.utils.URIBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties( "fitnesse" )
 public class FitNesseClientProperties {
    private String host = "localhost";
-   private String path = "";
+   private String path;
    private int port = 8080;
    private String protocol = "http";
 

@@ -61,14 +61,14 @@ public class FitToPdfTranslationWithChildsTest {
       when( contentExtractor.extractRealContent( ROOT_PAGE_SOURCE )).thenReturn( ROOT_PAGE_SOURCE );
       when( contentExtractor.extractRealContent( CHILD_PAGE_ONE_SOURCE )).thenReturn( CHILD_PAGE_ONE_SOURCE );
       when( contentExtractor.extractRealContent( CHILD_PAGE_TWO_SOURCE )).thenReturn( CHILD_PAGE_TWO_SOURCE );
-      when( contentExtractor.cleanUpHtml( COMPILED_SOURCE_RAW )).thenReturn( FORMATTED_SOURCE );
+      when( contentExtractor.buildHtml( COMPILED_SOURCE_RAW )).thenReturn( FORMATTED_SOURCE );
       
       this.translation.translate( currentPage, properties );
    }
 
    @Test public void translate_whenChildPages_weawesContent() throws IOException{
       verify( contentExtractor, times( 3 )).extractRealContent( any() );
-      verify( contentExtractor, times( 1 )).cleanUpHtml( any() );
+      verify( contentExtractor, times( 1 )).buildHtml( any() );
       verify( fitNesseClient, times( 1 )).retrievePage( ROOT_PAGE );
       verify( fitNesseClient, times( 1 )).retrievePage( CHILD_PAGE_ONE );
       verify( fitNesseClient, times( 1 )).retrievePage( CHILD_PAGE_TWO );

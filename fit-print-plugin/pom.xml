@@ -26,6 +26,31 @@
     </dependency>
 
     <dependency>
+      <groupId>org.apache.xmlgraphics</groupId>
+      <artifactId>xmlgraphics-commons</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.xmlgraphics</groupId>
+      <artifactId>batik-transcoder</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.xmlgraphics</groupId>
+      <artifactId>batik-constants</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.xmlgraphics</groupId>
+      <artifactId>batik-i18n</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.xmlgraphics</groupId>
+      <artifactId>batik-script</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
     </dependency>
@@ -115,88 +140,15 @@
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
-<!-- 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>plugins</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/fitnesse</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>${fitnesse.files}</directory>
-                  <includes>
-                    <include>plugins.properties</include>
-                    <include>plugins/**</include>
-                  </includes>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-          <execution>
-            <id>frontpage</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/fitnesse/FitNesseRoot/FrontPage</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>${fitnesse.files}/FrontPage</directory>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
- 
-      <plugin>
-        <groupId>com.processpuzzle.fitnesse</groupId>
-        <artifactId>fitnesse-launcher-maven-plugin</artifactId>
-        <configuration>
-          <maxErrorsToConsole>20</maxErrorsToConsole>
-          <launches>
-            <launch>
-              <suite>FitPrint</suite>
-            </launch>
-          </launches>
-          <useProjectDependencies>
-            <scope>test</scope>
-            <scope>runtime</scope>
-          </useProjectDependencies>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>com.processpuzzle.fitnesse</groupId>
-            <artifactId>fit-print-plugin</artifactId>
-          </dependency>
-        </dependencies>
-        <executions>
-          <execution>
-            <id>start-fitnesse</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>set-up</goal>
-              <goal>server</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>stop-fitnesse</id>
-            <phase>post-integration-test</phase>
-            <goals>
-              <goal>shutdown</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
- -->
+      <!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-resources-plugin</artifactId> <executions> <execution> <id>plugins</id> <phase>validate</phase> <goals> <goal>copy-resources</goal> 
+        </goals> <configuration> <outputDirectory>${project.build.directory}/fitnesse</outputDirectory> <resources> <resource> <directory>${fitnesse.files}</directory> <includes> <include>plugins.properties</include> 
+        <include>plugins/**</include> </includes> </resource> </resources> </configuration> </execution> <execution> <id>frontpage</id> <phase>validate</phase> <goals> <goal>copy-resources</goal> </goals> <configuration> 
+        <outputDirectory>${project.build.directory}/fitnesse/FitNesseRoot/FrontPage</outputDirectory> <resources> <resource> <directory>${fitnesse.files}/FrontPage</directory> </resource> </resources> </configuration> 
+        </execution> </executions> </plugin> <plugin> <groupId>com.processpuzzle.fitnesse</groupId> <artifactId>fitnesse-launcher-maven-plugin</artifactId> <configuration> <maxErrorsToConsole>20</maxErrorsToConsole> 
+        <launches> <launch> <suite>FitPrint</suite> </launch> </launches> <useProjectDependencies> <scope>test</scope> <scope>runtime</scope> </useProjectDependencies> </configuration> <dependencies> <dependency> 
+        <groupId>com.processpuzzle.fitnesse</groupId> <artifactId>fit-print-plugin</artifactId> </dependency> </dependencies> <executions> <execution> <id>start-fitnesse</id> <phase>pre-integration-test</phase> 
+        <goals> <goal>set-up</goal> <goal>server</goal> </goals> </execution> <execution> <id>stop-fitnesse</id> <phase>post-integration-test</phase> <goals> <goal>shutdown</goal> </goals> </execution> </executions> 
+        </plugin> -->
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

@@ -39,11 +39,11 @@ import org.xml.sax.SAXException;
 
 @Component
 public class FitNessePageContentExtractor {
+   private static final String SVG_STYLE = "<head><style type=\"text/css\">svg { display: block; width: 100mm; height: 100mm; }</style></head>";
    private static final String XSLT_FILE = "classpath:FitToPdf.xsl";
    private static final Logger logger = LoggerFactory.getLogger( FitNessePageContentExtractor.class );
    private DocumentBuilderFactory builderFactory;
    private Document documentDOM;
-   private String correctedHtml;
    private DocumentBuilder domParser;
    @Autowired ResourceLoader resourceLoader;
    private String sourceHtml;
@@ -51,7 +51,7 @@ public class FitNessePageContentExtractor {
    private XPath xPath;
 
    // public accessors and mutators
-   public String cleanUpHtml( String inputHtml ) throws IOException {
+   public String buildHtml( String inputHtml ) throws IOException {
       HtmlCleaner cleaner = new HtmlCleaner();
       CleanerProperties props = cleaner.getProperties();
       TagNode node = cleaner.clean( inputHtml );
@@ -59,6 +59,8 @@ public class FitNessePageContentExtractor {
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       new PrettyXmlSerializer(props).writeToStream( node, outputStream );
       String cleanedHtml = outputStream.toString( StandardCharsets.UTF_8.name() );
+      cleanedHtml = StringUtils.replace( cleanedHtml, "<head/>", SVG_STYLE );
+      cleanedHtml = StringUtils.replace( cleanedHtml, "<head />", SVG_STYLE );
       return cleanedHtml;
    }
 
@@ -68,6 +70,7 @@ public class FitNessePageContentExtractor {
 
       try{
          correctFailures();
+         removeUnparsableElements();
          parseSourceHtml();
          strippContentWithXslt();
       }catch( IOException | TransformerException | ParserConfigurationException | SAXException e ){
@@ -80,15 +83,11 @@ public class FitNessePageContentExtractor {
    }
 
    // protected, private helper mehtods
-   private String correctFailures() {
-      String[] searchList = { "<header>", "</header>", "<nav ", "</nav>", "<article>", "</article>", "<footer>", "</footer>", "content=\"IE=edge\">", ".css\">",
-            "<li <", "&pageTemplate", "&times" };
-      String[] replacementList = { "<div id='header'>", "</div>", "<div id='nav' ", "</div>", "<div id='article'>", "</div>", "<div id='footer'>", "</div>",
-            "content=\"IE=edge\"/>", ".css\"/>", "<li><", "&amp;pageTemplate", "&amp;times" };
-      correctedHtml = StringUtils.replaceEach( sourceHtml, searchList, replacementList );
-      logger.debug( "Corrected HTML: \n" + correctedHtml );
-
-      return correctedHtml;
+   private void correctFailures() {
+      String[] searchList = { "<header>", "</header>", "<nav ", "</nav>", "<article>", "</article>", "<footer>", "</footer>", "content=\"IE=edge\">", ".css\">", "<li<", "<li <", "&pageTemplate", "&times" };
+      String[] replacementList = { "<div id='header'>", "</div>", "<div id='nav' ", "</div>", "<div id='article'>", "</div>", "<div id='footer'>", "</div>", "content=\"IE=edge\"/>", ".css\"/>", "<li><", "<li><", "&amp;pageTemplate", "&amp;times" };
+      sourceHtml = StringUtils.replaceEach( sourceHtml, searchList, replacementList );
+      logger.debug( "Corrected HTML: \n" + sourceHtml );
    }
 
    private String node2String( Node node ) throws TransformerFactoryConfigurationError, TransformerException {
@@ -98,6 +97,13 @@ public class FitNessePageContentExtractor {
       transformer.transform( new DOMSource( node ), xmlOutput );
       String extractedHtml = xmlOutput.getWriter().toString();
       return extractedHtml;
+   }
+
+   private void removeUnparsableElements() {
+      String[] searchList = { "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>" };
+      String[] replacementList = { "" };
+      sourceHtml = StringUtils.replaceEach( sourceHtml, searchList, replacementList );
+      logger.debug( "Corrected HTML: \n" + sourceHtml );
    }
 
    @SuppressWarnings( "unused" ) private void strippContent() throws XPathExpressionException, TransformerFactoryConfigurationError, TransformerException {
@@ -114,7 +120,8 @@ public class FitNessePageContentExtractor {
 
    private void parseSourceHtml() throws ParserConfigurationException, SAXException, IOException {
       builderFactory = DocumentBuilderFactory.newInstance();
+      builderFactory.setNamespaceAware(true);
       domParser = builderFactory.newDocumentBuilder();
-      documentDOM = domParser.parse( new ByteArrayInputStream( correctedHtml.getBytes( StandardCharsets.UTF_8 ) ) );
+      documentDOM = domParser.parse( new ByteArrayInputStream( sourceHtml.getBytes( StandardCharsets.UTF_8 ) ) );
    }
 }

@@ -2,11 +2,10 @@
 !4 !c Dokumentation and Acceptance Tests
 Well, this is a page which can be printed as a PDF. Just click on the link at the bottom of the page.
 
-Gao is watching!!!
-
 This page has child pages, which has to be printed as well:
  * [[child page one][^ChildOne]]
  * [[child page two][^ChildTwo]] 
+ * [[child page with SVG drawing][^ChildWithSvg]] 
 
 !startFitToPdf
 printChildPages = true

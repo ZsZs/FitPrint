@@ -32,7 +32,7 @@ public class PDFRenderer {
    private File sourceFile;
 
    // constructors
-   
+
    // public accessors and mutators
    public void render( File sourceFile, File outputFile ) {
       this.sourceFile = sourceFile;
@@ -54,28 +54,32 @@ public class PDFRenderer {
    // protected, private helper methods
    private void createPdf() throws PdfCreationException {
       OutputStream outputPDF = null;
-      
+
       try{
          outputPDF = new FileOutputStream( this.outputFile );
          
          // Create the renderer and point it to the XHTML document
          ITextRenderer renderer = new ITextRenderer();
-         renderer.setDocument( this.sourceFile );
+
+         ChainingReplacedElementFactory chainingReplacedElementFactory = new ChainingReplacedElementFactory();
+         chainingReplacedElementFactory.addReplacedElementFactory( new SVGReplacedElementFactory() );
+         renderer.getSharedContext().setReplacedElementFactory( chainingReplacedElementFactory );
 
          // Render the PDF document
+         renderer.setDocument( this.sourceFile );
          renderer.layout();
-         renderer.createPDF( outputPDF );         
+         renderer.createPDF( outputPDF );
       }catch( Exception e ){
          logger.error( "Couldn't create the PDF: " + this.outputFile.getPath() + " from HTML" + sourceFile.getPath(), e );
          throw new PdfCreationException( sourceFile.getPath(), outputFile.getPath(), e );
-      }finally {
+      }finally{
          // Close the streams (and don't cross them!)
          try{
             outputPDF.close();
          }catch( IOException e ){
             logger.error( "Couldn't close the output stream.", e );
             throw new PdfCreationException( sourceFile.getPath(), outputFile.getPath(), e );
-         }         
+         }
       }
    }
 

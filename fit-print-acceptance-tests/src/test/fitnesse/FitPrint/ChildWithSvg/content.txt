@@ -1,0 +1,6 @@
+!2 Page with SVG Drawing
+And here is the !-PlantUML-! drawing:
+!startuml "This is diagram drawned with !-PlantUML-!
+!pragma graphviz_dot jdot 
+fitnesse -> plantuml : generate 
+!enduml

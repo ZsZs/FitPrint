@@ -39,7 +39,7 @@ public class FitToPdfTranslation {
    public String translate( SourcePage currentPage, Properties properties ) {
       if( inProcessing )
          return "";
-      logger.debug( "Starting translation of: " + currentPage.getName() + " HTML page to PDF." );
+      logger.info( "Starting translation of: " + currentPage.getName() + " HTML page to PDF." );
       this.currentPage = currentPage;
       this.fitToPdfProperties = properties;
 
@@ -47,8 +47,9 @@ public class FitToPdfTranslation {
          setUpTranslation();
          if( !verifyPdfExist() ){
             String sourceHtml = compileSourceHtml( this.currentPage );
-            sourceHtml = contentExtractor.cleanUpHtml( sourceHtml );
+            sourceHtml = contentExtractor.buildHtml( sourceHtml );
             saveSourceHtml( sourceHtml );
+            System.out.println( "HTML to print: \n" + sourceHtml );
             renderHtmlToPdf();
             uploadPdfToFitNesse();
          }
@@ -115,7 +116,6 @@ public class FitToPdfTranslation {
 
    private void setUpTranslation() throws IOException {
       inProcessing = true;
-      fitNesseClient.setHostUrl( "http://localhost:9123" );
       inputFile = File.createTempFile( "source-", ".html" );
       outputFile = File.createTempFile( "output", ".pdf" );
       pdfResourcePathInFitNesse = FIT_TO_PDF_FILES_ROOT + currentPage.getName() + ".pdf";

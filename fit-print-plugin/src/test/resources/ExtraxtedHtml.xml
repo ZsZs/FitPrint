@@ -1,18 +1,11 @@
 <div id="article">
-    <h1>
-      <center>FitPrint</center>
-    </h1>
-    <h4>
-      <center>Dokumentation and Acceptance Tests</center>
-    </h4>
-    <br/>
-    <a href="/files/FitToPdf/FitPrint.pdf">View PDF</a><br/>
-    <br/>
-    <br/>
-    
-    
-    
-    
-    
-    
-  </div>
+  <h1>
+    <center>FitPrint</center>
+  </h1>
+  <h4>
+    <center>Dokumentation and Acceptance Tests</center>
+  </h4>
+  <br />
+  <a href="/files/FitToPdf/FitPrint.pdf">View PDF</a>
+  <br />
+</div>

@@ -48,7 +48,7 @@ public class FitToPdfTranslationTest {
       when( fitNesseClient.verifyFileExist( anyString() )).thenReturn( false );
       when( fitNesseClient.retrievePage( CURRENT_PAGE )).thenReturn( PAGE_SOURCE );
       when( contentExtractor.extractRealContent( PAGE_SOURCE )).thenReturn( PAGE_SOURCE );
-      when( contentExtractor.cleanUpHtml( COMPILED_SOURCE_RAW )).thenReturn( FORMATTED_SOURCE );
+      when( contentExtractor.buildHtml( COMPILED_SOURCE_RAW )).thenReturn( FORMATTED_SOURCE );
       
       outputFilePath = this.translation.translate( currentPage, properties );
    }

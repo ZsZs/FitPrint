@@ -83,19 +83,19 @@
         <artifactId>fit-print-plugin</artifactId>
         <version>${project.version}</version>
       </dependency>
-      
+
       <dependency>
         <groupId>com.processpuzzle.fitnesse</groupId>
         <artifactId>fit-print-acceptance-tests</artifactId>
         <version>${project.version}</version>
       </dependency>
-  
+
       <dependency>
         <groupId>org.fitnesse</groupId>
         <artifactId>fitnesse</artifactId>
         <version>${fitnesse.version}</version>
       </dependency>
-    
+
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
@@ -107,25 +107,55 @@
         <artifactId>commons-lang3</artifactId>
         <version>${commons.lang3.version}</version>
       </dependency>
-    
+
+      <dependency>
+        <groupId>org.apache.xmlgraphics</groupId>
+        <artifactId>xmlgraphics-commons</artifactId>
+        <version>2.2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.xmlgraphics</groupId>
+        <artifactId>batik-transcoder</artifactId>
+        <version>1.9</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.xmlgraphics</groupId>
+        <artifactId>batik-constants</artifactId>
+        <version>1.9</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.xmlgraphics</groupId>
+        <artifactId>batik-i18n</artifactId>
+        <version>1.9</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.xmlgraphics</groupId>
+        <artifactId>batik-script</artifactId>
+        <version>1.9</version>
+      </dependency>
+
       <dependency>
         <groupId>org.xhtmlrenderer</groupId>
         <artifactId>flying-saucer-pdf</artifactId>
         <version>9.1.5</version>
       </dependency>
-  
+
       <dependency>
         <groupId>net.sf.jtidy</groupId>
         <artifactId>jtidy</artifactId>
         <version>r938</version>
       </dependency>
-  
+
       <dependency>
         <groupId>net.sourceforge.htmlcleaner</groupId>
         <artifactId>htmlcleaner</artifactId>
         <version>2.19</version>
       </dependency>
-  
+
       <dependency>
         <groupId>org.apache.pdfbox</groupId>
         <artifactId>pdfbox</artifactId>
@@ -154,7 +184,7 @@
         <artifactId>versioneye-maven-plugin</artifactId>
       </plugin>
     </plugins>
-    
+
     <pluginManagement>
       <plugins>
         <plugin>

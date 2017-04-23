@@ -80,8 +80,13 @@ public class FitNesseClient {
       try{
          restTemplate.getForEntity( this.hostUrl + FILES_PATH + "/" + fileResourcePath, String.class );
          fileExist = true;
-      }catch( Exception e ){
-         logger.error( "Checking file's: " + fileResourcePath + " existance failed.", e );
+      }catch( HttpClientErrorException e ){
+         if( e.getRawStatusCode() == 404 ){
+            logger.info( "File: " + fileResourcePath + " doesn't exist." );
+            fileExist = false;
+         }else{
+            logger.error( "Verifying file existence failed.", e );
+         }
       }
 
       return fileExist;
